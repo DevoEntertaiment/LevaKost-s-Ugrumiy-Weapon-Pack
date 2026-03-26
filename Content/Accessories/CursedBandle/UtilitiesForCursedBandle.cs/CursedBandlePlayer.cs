@@ -11,18 +11,12 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 	{
 		public bool isCursed;
 		public int cursedItemType;
-
-		/// <summary>Позиция цели ИИ — для подмены курсора мыши.</summary>
 		public Vector2 aiTargetPosition;
 
 		private readonly CursedBandleAI ai = new CursedBandleAI();
-
-		/// <summary>
-		/// Запоминаем, в каком слоте стоит аксессуар и сам предмет,
-		/// чтобы принудительно возвращать при попытке снять.
-		/// </summary>
 		private int cursedSlotIndex = -1;
 		private Item cursedItemBackup;
+		private bool brainLoaded;
 
 		public override void ResetEffects()
 		{
@@ -34,7 +28,14 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 			if (!isCursed)
 				return;
 
-			// 1. Полностью обнуляем пользовательский ввод
+			// Загружаем мозг при первом включении
+			if (!brainLoaded)
+			{
+				ai.LoadBrain();
+				brainLoaded = true;
+			}
+
+			// 1. Обнуляем ввод игрока
 			Player.controlLeft = false;
 			Player.controlRight = false;
 			Player.controlUp = false;
@@ -51,16 +52,15 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 			Player.controlQuickMana = false;
 			Player.controlInv = false;
 
-			// 2. Закрываем любые открытые интерфейсы
+			// 2. Блокируем интерфейс
 			if (Player.chest != -1)
 				Player.chest = -1;
 			Main.playerInventory = false;
 
-			// 3. ИИ задаёт свои управляющие сигналы
+			// 3. ИИ принимает решения
 			ai.Update(Player);
 
-			// 4. Подменяем позицию мыши на позицию цели ИИ,
-			//    чтобы оружие било в сторону врага, а не курсора
+			// 4. Подмена мыши на цель
 			if (aiTargetPosition != Vector2.Zero)
 			{
 				Vector2 screenPos = aiTargetPosition - Main.screenPosition;
@@ -69,19 +69,13 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 			}
 		}
 
-		/// <summary>
-		/// PreUpdate: принудительно возвращаем аксессуар в слот,
-		/// если игрок каким-то образом его вытащил.
-		/// </summary>
 		public override void PreUpdate()
 		{
 			if (cursedSlotIndex < 0 || cursedItemType == 0)
 				return;
 
-			// Проверяем — если слот вдруг пуст, а проклятие было активно
 			if (Player.armor[cursedSlotIndex].type != cursedItemType && cursedItemBackup != null)
 			{
-				// Ищем аксессуар в инвентаре (игрок мог его туда перетащить)
 				for (int i = 0; i < Player.inventory.Length; i++)
 				{
 					if (Player.inventory[i].type == cursedItemType)
@@ -92,7 +86,6 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 					}
 				}
 
-				// Ищем на курсоре мыши
 				if (Main.mouseItem.type == cursedItemType)
 				{
 					Player.armor[cursedSlotIndex] = Main.mouseItem.Clone();
@@ -100,14 +93,10 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 					return;
 				}
 
-				// Если вообще нигде нет — восстанавливаем из бэкапа
 				Player.armor[cursedSlotIndex] = cursedItemBackup.Clone();
 			}
 		}
 
-		/// <summary>
-		/// PostUpdate: запоминаем слот и бэкап аксессуара каждый тик.
-		/// </summary>
 		public override void PostUpdate()
 		{
 			if (!isCursed)
@@ -117,7 +106,6 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 				return;
 			}
 
-			// Находим и запоминаем слот с Cursed Bandle
 			for (int i = 3; i < 3 + Player.extraAccessorySlots + 7; i++)
 			{
 				if (Player.armor[i].type == cursedItemType)
@@ -131,6 +119,9 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 
 		public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
 		{
+			// ИИ получает штраф за смерть и сохраняет знания
+			ai.OnDeath();
+
 			if (cursedSlotIndex >= 0 && cursedSlotIndex < Player.armor.Length
 				&& Player.armor[cursedSlotIndex].type == cursedItemType)
 			{
@@ -141,6 +132,7 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 			isCursed = false;
 			cursedSlotIndex = -1;
 			cursedItemBackup = null;
+			brainLoaded = false;
 			ai.Reset();
 		}
 	}

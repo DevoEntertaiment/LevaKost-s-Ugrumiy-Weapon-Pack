@@ -13,6 +13,16 @@ Items: {
 		DisplayName: Вишня
 		Tooltip: Чудесно идеальная вишня\nВосстанавливает всё ХП\n// Крайне редкий дроп с врагов после Plantera
 	}
+
+	CursedBandle: {
+		// DisplayName: Cursed Bandle
+		/* Tooltip:
+			'''
+			'You feel something dark taking control...'
+			Once equipped, it cannot be removed until death
+			Your body moves on its own
+			''' */
+	}
 }
 
 Projectiles: {

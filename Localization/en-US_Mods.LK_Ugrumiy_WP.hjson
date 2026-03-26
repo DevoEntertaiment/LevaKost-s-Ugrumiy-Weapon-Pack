@@ -13,6 +13,16 @@ Items: {
 		DisplayName: Cherry
 		Tooltip: A miraculously perfect cherry\nRestores all HP\n// Extremely rare drop from post-Plantera enemies
 	}
+
+	CursedBandle: {
+		DisplayName: Cursed Bandle
+		Tooltip:
+			'''
+			'You feel something dark taking control...'
+			Once equipped, it cannot be removed until death
+			Your body moves on its own
+			'''
+	}
 }
 
 Projectiles: {

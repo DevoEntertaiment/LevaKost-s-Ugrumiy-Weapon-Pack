@@ -1,238 +1,355 @@
 ﻿using System;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace LK_Ugrumiy_WP.Content.Accessories
 {
+	/// <summary>
+	/// ИИ с реальным Q-Learning обучением.
+	/// Учится на своём опыте: получает награды за убийства,
+	/// штрафы за полученный урон, и постепенно улучшает стратегию.
+	/// </summary>
 	public class CursedBandleAI
 	{
-		private enum AIState
-		{
-			Idle,
-			Patrol,
-			Combat,
-			Flee,
-			Build
-		}
-
-		private AIState state = AIState.Patrol;
-		private int stateTimer;
-		private int directionX = 1;
-		private int thinkTimer;
-		private int jumpCooldown;
-		private int attackCooldown;
-		private int buildCooldown;
+		private readonly QLearningBrain brain = new QLearningBrain();
 		private readonly Random rng = new Random();
 
-		private const float FleeHealthThreshold = 0.3f;
-		private const float DetectRange = 600f;
-		private const float FleeRange = 200f;
-		private const int MinPatrolTicks = 60;
-		private const int MaxPatrolTicks = 300;
-		private const int MinIdleTicks = 30;
-		private const int MaxIdleTicks = 120;
+		// Кулдауны
+		private int jumpCooldown;
+		private int attackCooldown;
+		private int healCooldown;
+
+		// Отслеживание изменений для наград
+		private int prevPlayerHp;
+		private int prevEnemyHp;
+		private int prevEnemyWhoAmI = -1;
+		private Vector2 prevPosition;
+		private int stuckCounter;
+
+		// Параметры
+		private const float DetectRange = 700f;
+		private const int LearnInterval = 6;  // Обучаемся каждые N тиков (не каждый)
+		private int tickCounter;
+
+		// Автосохранение
+		private int saveTimer;
+		private const int SaveInterval = 3600; // Каждые 60 секунд
 
 		public void Reset()
 		{
-			state = AIState.Patrol;
-			stateTimer = 0;
-			thinkTimer = 0;
+			jumpCooldown = 0;
+			attackCooldown = 0;
+			healCooldown = 0;
+			prevEnemyWhoAmI = -1;
+			stuckCounter = 0;
+			brain.Reset();
 		}
 
+		/// <summary>Загрузить знания из файла при экипировке.</summary>
+		public void LoadBrain()
+		{
+			string path = Path.Combine(ModLoader.ModPath, "CursedBandleBrain");
+			Directory.CreateDirectory(path);
+			brain.Load(path);
+		}
+
+		/// <summary>Сохранить знания при смерти / периодически.</summary>
+		public void SaveBrain()
+		{
+			string path = Path.Combine(ModLoader.ModPath, "CursedBandleBrain");
+			Directory.CreateDirectory(path);
+			brain.Save(path);
+		}
+
+		public void OnDeath()
+		{
+			brain.OnDeath();
+			SaveBrain();
+		}
+
+		/// <summary>
+		/// Главный метод — вызывается каждый тик.
+		/// </summary>
 		public void Update(Player player)
 		{
 			var modPlayer = player.GetModPlayer<CursedBandlePlayer>();
 
+			// Кулдауны
 			if (jumpCooldown > 0) jumpCooldown--;
 			if (attackCooldown > 0) attackCooldown--;
-			if (buildCooldown > 0) buildCooldown--;
-			if (thinkTimer > 0) thinkTimer--;
+			if (healCooldown > 0) healCooldown--;
+			tickCounter++;
 
+			// Автосохранение
+			saveTimer++;
+			if (saveTimer >= SaveInterval)
+			{
+				saveTimer = 0;
+				SaveBrain();
+			}
+
+			// Находим врагов
 			NPC nearestEnemy = FindNearestEnemy(player);
+			int enemyCount = CountEnemiesInRange(player, DetectRange);
 
-			// Сбрасываем цель мыши — если нет врага, целимся перед собой
+			// Проверяем — был ли убит предыдущий враг
+			bool enemyKilled = false;
+			if (prevEnemyWhoAmI >= 0 && prevEnemyWhoAmI < Main.maxNPCs)
+			{
+				NPC prevEnemy = Main.npc[prevEnemyWhoAmI];
+				if (!prevEnemy.active || prevEnemy.life <= 0)
+					enemyKilled = true;
+			}
+
+			// Проверяем — получили ли мы урон
+			bool wasHit = player.statLife < prevPlayerHp;
+
+			// Проверяем — застряли ли
+			bool isStuck = Vector2.Distance(player.Center, prevPosition) < 1f && player.velocity.Y == 0f;
+			if (isStuck) stuckCounter++;
+			else stuckCounter = 0;
+
+			// === Q-Learning цикл (каждые N тиков) ===
+			if (tickCounter % LearnInterval == 0)
+			{
+				// 1. Наблюдаем текущее состояние
+				QLearningBrain.StateKey currentState = brain.Observe(player, nearestEnemy, enemyCount);
+
+				// 2. Считаем награду за предыдущее действие
+				float reward = brain.CalculateReward(
+					player, nearestEnemy,
+					prevPlayerHp,
+					prevEnemyHp,
+					enemyKilled,
+					wasHit,
+					stuckCounter > 30
+				);
+
+				// 3. Обучаемся на полученном опыте
+				brain.Learn(currentState, reward);
+
+				// 4. Выбираем следующее действие
+				QLearningBrain.AIAction action = brain.ChooseAction(currentState);
+
+				// 5. Выполняем действие
+				ExecuteAction(player, action, nearestEnemy, modPlayer);
+
+				// 6. Запоминаем для следующего шага
+				brain.Remember(currentState, action);
+			}
+			else
+			{
+				// Между шагами обучения — продолжаем текущее действие
+				ContinueCurrentAction(player, nearestEnemy, modPlayer);
+			}
+
+			// Обновляем отслеживание
+			prevPlayerHp = player.statLife;
+			if (nearestEnemy != null)
+			{
+				prevEnemyHp = nearestEnemy.life;
+				prevEnemyWhoAmI = nearestEnemy.whoAmI;
+			}
+			else
+			{
+				prevEnemyHp = 0;
+				prevEnemyWhoAmI = -1;
+			}
+			prevPosition = player.Center;
+
+			// Целимся на врага (для подмены мыши)
 			if (nearestEnemy != null)
 				modPlayer.aiTargetPosition = nearestEnemy.Center;
 			else
 				modPlayer.aiTargetPosition = player.Center + new Vector2(player.direction * 200f, 0f);
+		}
 
-			DecideState(player, nearestEnemy);
+		// ============================================================
+		// Выполнение действий
+		// ============================================================
 
-			switch (state)
+		private QLearningBrain.AIAction lastAction;
+
+		private void ExecuteAction(Player player, QLearningBrain.AIAction action,
+			NPC enemy, CursedBandlePlayer modPlayer)
+		{
+			lastAction = action;
+
+			switch (action)
 			{
-				case AIState.Idle:
-					DoIdle(player);
+				case QLearningBrain.AIAction.MoveLeft:
+					player.controlLeft = true;
+					player.ChangeDir(-1);
 					break;
-				case AIState.Patrol:
-					DoPatrol(player);
+
+				case QLearningBrain.AIAction.MoveRight:
+					player.controlRight = true;
+					player.ChangeDir(1);
 					break;
-				case AIState.Combat:
-					DoCombat(player, nearestEnemy);
+
+				case QLearningBrain.AIAction.Jump:
+					TryJump(player);
 					break;
-				case AIState.Flee:
-					DoFlee(player, nearestEnemy);
+
+				case QLearningBrain.AIAction.JumpLeft:
+					player.controlLeft = true;
+					player.ChangeDir(-1);
+					TryJump(player);
 					break;
-				case AIState.Build:
-					DoBuild(player);
+
+				case QLearningBrain.AIAction.JumpRight:
+					player.controlRight = true;
+					player.ChangeDir(1);
+					TryJump(player);
+					break;
+
+				case QLearningBrain.AIAction.Attack:
+					if (enemy != null)
+					{
+						SelectBestWeapon(player, enemy);
+						player.controlUseItem = true;
+						float dx = enemy.Center.X - player.Center.X;
+						player.ChangeDir(dx > 0 ? 1 : -1);
+						attackCooldown = 8;
+					}
+					break;
+
+				case QLearningBrain.AIAction.AttackApproach:
+					if (enemy != null)
+					{
+						float dx2 = enemy.Center.X - player.Center.X;
+						if (dx2 > 30f) player.controlRight = true;
+						else if (dx2 < -30f) player.controlLeft = true;
+						player.ChangeDir(dx2 > 0 ? 1 : -1);
+
+						if (enemy.Center.Y < player.Center.Y - 60f || IsBlocked(player))
+							TryJump(player);
+
+						SelectBestWeapon(player, enemy);
+						player.controlUseItem = true;
+						attackCooldown = 6;
+					}
+					break;
+
+				case QLearningBrain.AIAction.Flee:
+					if (enemy != null)
+					{
+						float dx3 = enemy.Center.X - player.Center.X;
+						if (dx3 > 0) player.controlLeft = true;
+						else player.controlRight = true;
+						TryJump(player);
+					}
+					else
+					{
+						// Нет врага — просто двигаемся
+						if (rng.Next(2) == 0) player.controlLeft = true;
+						else player.controlRight = true;
+					}
+					break;
+
+				case QLearningBrain.AIAction.Heal:
+					if (healCooldown <= 0)
+					{
+						player.controlQuickHeal = true;
+						healCooldown = 60; // 1 секунда кулдаун
+					}
+					break;
+
+				case QLearningBrain.AIAction.DodgeJump:
+					// Уклонение: прыжок в случайную сторону
+					TryJump(player);
+					if (rng.Next(2) == 0) player.controlLeft = true;
+					else player.controlRight = true;
+					break;
+
+				case QLearningBrain.AIAction.BuildBelow:
+					TryBuild(player);
+					break;
+
+				case QLearningBrain.AIAction.Idle:
+					// Ничего не делаем — "думаем"
 					break;
 			}
-
-			if (rng.Next(300) == 0 && state != AIState.Combat && state != AIState.Flee)
-			{
-				thinkTimer = rng.Next(MinIdleTicks, MaxIdleTicks);
-				state = AIState.Idle;
-			}
 		}
 
-		private void DecideState(Player player, NPC nearestEnemy)
+		/// <summary>Продолжаем последнее действие между шагами обучения.</summary>
+		private void ContinueCurrentAction(Player player, NPC enemy, CursedBandlePlayer modPlayer)
 		{
-			float hpRatio = (float)player.statLife / player.statLifeMax2;
-
-			if (nearestEnemy != null)
+			// Упрощённое продолжение текущего действия
+			switch (lastAction)
 			{
-				float dist = Vector2.Distance(player.Center, nearestEnemy.Center);
-
-				if (hpRatio < FleeHealthThreshold && dist < FleeRange)
-				{
-					state = AIState.Flee;
-					return;
-				}
-
-				if (dist < DetectRange)
-				{
-					state = AIState.Combat;
-					return;
-				}
-			}
-
-			if (stateTimer <= 0 && state != AIState.Idle)
-			{
-				if (rng.Next(10) < 2)
-				{
-					state = AIState.Build;
-					stateTimer = rng.Next(60, 180);
-				}
-				else
-				{
-					state = AIState.Patrol;
-					stateTimer = rng.Next(MinPatrolTicks, MaxPatrolTicks);
-					if (rng.Next(2) == 0) directionX *= -1;
-				}
-			}
-
-			stateTimer--;
-		}
-
-		private void DoIdle(Player player)
-		{
-			if (thinkTimer <= 0)
-			{
-				state = AIState.Patrol;
-				stateTimer = rng.Next(MinPatrolTicks, MaxPatrolTicks);
-			}
-		}
-
-		private void DoPatrol(Player player)
-		{
-			if (directionX > 0)
-				player.controlRight = true;
-			else
-				player.controlLeft = true;
-
-			if (IsBlockedHorizontally(player) || rng.Next(80) == 0)
-				TryJump(player);
-
-			if (rng.Next(200) == 0)
-				directionX *= -1;
-		}
-
-		private void DoCombat(Player player, NPC target)
-		{
-			if (target == null || !target.active)
-			{
-				state = AIState.Patrol;
-				return;
-			}
-
-			float dx = target.Center.X - player.Center.X;
-			float dy = target.Center.Y - player.Center.Y;
-
-			if (dx > 40f)
-				player.controlRight = true;
-			else if (dx < -40f)
-				player.controlLeft = true;
-
-			if (dy < -60f || IsBlockedHorizontally(player))
-				TryJump(player);
-
-			// Поворачиваем персонажа к врагу
-			player.ChangeDir(dx > 0 ? 1 : -1);
-
-			if (attackCooldown <= 0)
-			{
-				SelectBestWeapon(player);
-				player.controlUseItem = true;
-				attackCooldown = 10 + rng.Next(15);
-			}
-		}
-
-		private void DoFlee(Player player, NPC threat)
-		{
-			if (threat == null || !threat.active)
-			{
-				state = AIState.Patrol;
-				return;
-			}
-
-			float dx = threat.Center.X - player.Center.X;
-
-			if (dx > 0)
-				player.controlLeft = true;
-			else
-				player.controlRight = true;
-
-			TryJump(player);
-			player.controlQuickHeal = true;
-
-			float dist = Vector2.Distance(player.Center, threat.Center);
-			if (dist > DetectRange)
-				state = AIState.Patrol;
-		}
-
-		private void DoBuild(Player player)
-		{
-			if (buildCooldown > 0) return;
-
-			for (int i = 0; i < 50; i++)
-			{
-				Item item = player.inventory[i];
-				if (item.active && item.createTile >= TileID.Dirt && item.stack > 0)
-				{
-					player.selectedItem = i;
+				case QLearningBrain.AIAction.MoveLeft:
+					player.controlLeft = true;
 					break;
-				}
+				case QLearningBrain.AIAction.MoveRight:
+					player.controlRight = true;
+					break;
+				case QLearningBrain.AIAction.JumpLeft:
+					player.controlLeft = true;
+					break;
+				case QLearningBrain.AIAction.JumpRight:
+					player.controlRight = true;
+					break;
+				case QLearningBrain.AIAction.Attack:
+				case QLearningBrain.AIAction.AttackApproach:
+					if (enemy != null && attackCooldown <= 0)
+					{
+						player.controlUseItem = true;
+						float dx = enemy.Center.X - player.Center.X;
+						player.ChangeDir(dx > 0 ? 1 : -1);
+						if (lastAction == QLearningBrain.AIAction.AttackApproach)
+						{
+							if (dx > 30f) player.controlRight = true;
+							else if (dx < -30f) player.controlLeft = true;
+						}
+					}
+					break;
+				case QLearningBrain.AIAction.Flee:
+					if (enemy != null)
+					{
+						float dx2 = enemy.Center.X - player.Center.X;
+						if (dx2 > 0) player.controlLeft = true;
+						else player.controlRight = true;
+					}
+					break;
 			}
-
-			player.controlUseItem = true;
-			player.controlDown = true;
-			buildCooldown = 30 + rng.Next(60);
-
-			if (stateTimer <= 0)
-				state = AIState.Patrol;
 		}
 
-		private void SelectBestWeapon(Player player)
+		// ============================================================
+		// Утилиты
+		// ============================================================
+
+		/// <summary>Выбирает лучшее оружие с учётом дистанции до врага.</summary>
+		private void SelectBestWeapon(Player player, NPC enemy)
 		{
+			float dist = Vector2.Distance(player.Center, enemy.Center);
 			int bestSlot = 0;
-			int bestDamage = 0;
+			int bestScore = 0;
 
 			for (int i = 0; i < 10; i++)
 			{
 				Item item = player.inventory[i];
-				if (item.active && item.damage > bestDamage && !item.accessory && item.createTile < 0)
+				if (!item.active || item.damage <= 0 || item.accessory || item.createTile >= 0)
+					continue;
+
+				int score = item.damage;
+
+				// Бонус за рэнж на дистанции
+				if (dist > 200f && item.DamageType == DamageClass.Ranged)
+					score += 50;
+				if (dist > 200f && item.DamageType == DamageClass.Magic)
+					score += 40;
+
+				// Бонус за мили вблизи
+				if (dist < 150f && item.DamageType == DamageClass.Melee)
+					score += 30;
+
+				if (score > bestScore)
 				{
-					bestDamage = item.damage;
+					bestScore = score;
 					bestSlot = i;
 				}
 			}
@@ -259,10 +376,25 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 				}
 			}
 
-			return closestDist < DetectRange * 1.5f ? closest : null;
+			return closestDist < DetectRange ? closest : null;
 		}
 
-		private bool IsBlockedHorizontally(Player player)
+		private int CountEnemiesInRange(Player player, float range)
+		{
+			int count = 0;
+			for (int i = 0; i < Main.maxNPCs; i++)
+			{
+				NPC npc = Main.npc[i];
+				if (npc.active && !npc.friendly && !npc.townNPC && npc.life > 0)
+				{
+					if (Vector2.Distance(player.Center, npc.Center) < range)
+						count++;
+				}
+			}
+			return count;
+		}
+
+		private bool IsBlocked(Player player)
 		{
 			return Math.Abs(player.velocity.X) < 0.5f && player.velocity.Y == 0f;
 		}
@@ -272,7 +404,22 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 			if (jumpCooldown <= 0)
 			{
 				player.controlJump = true;
-				jumpCooldown = 15 + rng.Next(20);
+				jumpCooldown = 12;
+			}
+		}
+
+		private void TryBuild(Player player)
+		{
+			for (int i = 0; i < 50; i++)
+			{
+				Item item = player.inventory[i];
+				if (item.active && item.createTile >= TileID.Dirt && item.stack > 0)
+				{
+					player.selectedItem = i;
+					player.controlUseItem = true;
+					player.controlDown = true;
+					return;
+				}
 			}
 		}
 	}

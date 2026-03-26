@@ -23,6 +23,16 @@ Items: {
 			Your body moves on its own
 			''' */
 	}
+
+	DietPill: {
+		// DisplayName: Diet Pill
+		// Tooltip: ""
+	}
+
+	FatBurger: {
+		// DisplayName: Fat Burger
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

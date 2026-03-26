@@ -1,0 +1,25 @@
+Mods: {
+	LK_Ugrumiy_WP: {
+		Items: {
+			FatBurger: {
+				DisplayName: Fat Burger
+				Tooltip:
+					'''
+					A suspiciously large burger...
+					Increases your Fat level by 5-8 points
+					'One more can't hurt, right?'
+					'''
+			}
+
+			DietPill: {
+				DisplayName: Diet Pill
+				Tooltip:
+					'''
+					Reduces Fat level by 15 points
+					Helps you get back in shape
+					'Ask your doctor before use'
+					'''
+			}
+		}
+	}
+}

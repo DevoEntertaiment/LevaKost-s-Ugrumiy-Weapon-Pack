@@ -8,9 +8,21 @@ Items: {
 		DisplayName: Штанга Кирилла
 		Tooltip: Тяжёлая штанга, используемая как меч. Зажмите для заряда мощного удара!
 	}
+
+	Cherry: {
+		DisplayName: Вишня
+		Tooltip: Чудесно идеальная вишня\nВосстанавливает всё ХП\n// Крайне редкий дроп с врагов после Plantera
+	}
 }
 
 Projectiles: {
 	Ibp3000Projectile.DisplayName: ИБП-3000
 	KirillBarbellProjectile.DisplayName: Штанга Кирилла
+}
+
+Buffs: {
+	CherryCooldown: {
+		DisplayName: Вишневое переедание
+		Description: Вы насладились слишком многими вишнями... хотя нет, всего одной? Вашему организму нужно время, чтобы переварить такое совершенство.
+	}
 }

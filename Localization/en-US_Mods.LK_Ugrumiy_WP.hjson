@@ -8,9 +8,21 @@ Items: {
 		DisplayName: Kirill's Barbell
 		Tooltip: A heavy barbell wielded as a sword. Hold to charge up a devastating swing!
 	}
+
+	Cherry: {
+		DisplayName: Cherry
+		Tooltip: A miraculously perfect cherry\nRestores all HP\n// Extremely rare drop from post-Plantera enemies
+	}
 }
 
 Projectiles: {
 	Ibp3000Projectile.DisplayName: UPS-3000
 	KirillBarbellProjectile.DisplayName: Kirill's Barbell
+}
+
+Buffs: {
+	CherryCooldown: {
+		DisplayName: Cherry Overindulgence
+		Description: You've enjoyed too many cherries... wait, just one? Your body needs time to process such perfection.
+	}
 }

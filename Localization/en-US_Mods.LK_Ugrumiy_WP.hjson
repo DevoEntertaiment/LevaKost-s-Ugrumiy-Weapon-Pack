@@ -33,6 +33,17 @@ Items: {
 		DisplayName: Fat Burger
 		Tooltip: ""
 	}
+
+	JohnsHat: {
+		DisplayName: John's Hat
+		Tooltip:
+			'''
+			'A worn-out cap with a story...'
+			+10% damage to human-type enemies
+			+5% critical strike chance
+			John will hunt you down if you wear this...
+			'''
+	}
 }
 
 Projectiles: {
@@ -44,5 +55,24 @@ Buffs: {
 	CherryCooldown: {
 		DisplayName: Cherry Overindulgence
 		Description: You've enjoyed too many cherries... wait, just one? Your body needs time to process such perfection.
+	}
+}
+
+NPCs: {
+	JohnNPC: {
+		DisplayName: John
+		DeathMessage: "{0} was reclaimed by John, the original owner of the hat."
+	}
+}
+
+Bestiary.JohnNPC: A mysterious wanderer of the caverns. He seems awfully attached to his worn-out cap...
+
+Dialogue: {
+	JohnNPC: {
+		Angry: Hey! That's MY hat you're wearing! Give it back!
+		AngryChat: John: "That's MY hat! Give it back!"
+		Standard1: The depths hold many secrets... and many dangers.
+		Standard2: I've been wandering these caves for longer than I can remember.
+		Standard3: You ever feel like something's watching you from the shadows?
 	}
 }

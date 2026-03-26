@@ -33,6 +33,11 @@ Items: {
 		// DisplayName: Fat Burger
 		// Tooltip: ""
 	}
+
+	SpookyCandy: {
+		// DisplayName: Spooky Candy
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

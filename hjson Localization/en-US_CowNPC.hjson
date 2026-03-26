@@ -1,0 +1,34 @@
+Mods: {
+	LK_Ugrumiy_WP: {
+		NPCs.CowNPC.DisplayName: Cow
+		Bestiary.CowNPC: A 'cow' that insists it's actually a bull. Provides milk if you have hay. Don't ask where the milk comes from.
+
+		Dialogue: {
+			CowNPC: {
+				Standard1: Moo... I mean, SNORT! I'm a BULL, got it?
+				Standard2: Stop calling me a cow. Do I LOOK like a cow to you?! ...Don't answer that.
+				Standard3: I'm a BULL. B-U-L-L. The horns? Purely decorative. The udders? ...Mind your own business.
+				Standard4: Yeah I give milk. Bulls can do that too. It's 2024, stop being judgmental.
+				Standard5: The Guide keeps trying to pet me. One more time and I'm charging.
+				Standard6: I only came here because I smelled hay. Don't get any ideas.
+				Cooldown: Whoa whoa, easy there! I'm not a machine. Give me a moment...
+				Milk1: There. Happy now? ...Don't look at me like that.
+				Milk2: *uncomfortable mooing* ...We will NEVER speak of this again.
+				Milk3: Bull milk is a delicacy in some cultures! ...Probably.
+				Milk4: I swear this is the last time. ...That's what I said last time.
+			}
+		}
+
+		Items: {
+			CowMilk: {
+				DisplayName: Milk
+				Tooltip:
+					'''
+					Just regular milk, probably.....
+					Restores 50 HP and grants Well Fed
+					'Don't ask where it came from'
+					'''
+			}
+		}
+	}
+}

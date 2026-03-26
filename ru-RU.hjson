@@ -5,6 +5,21 @@ Mods: {
 				// DisplayName: John
 				// DeathMessage: Mods.LK_Ugrumiy_WP.NPCs.JohnNPC.DeathMessage
 			}
+
+			CowNPC: {
+				// DisplayName: Cow N P C
+
+				TownNPCMood: {
+					// Content: Я довольный.
+					// NoHome: Терпеть не могу, когда у меня нет дома.
+					// FarFromHome: Я слишком далеко от дома.
+					// LoveSpace: Я люблю, когда так много пространства.
+					// DislikeCrowded: Мне не нравится то, как здесь людно.
+					// HateCrowded: Я ненавижу то, как здесь людно.
+					// LikeNPC_Princess: Мне нравится {NPCName}.
+					// Princess_LovesNPC: Мне нравится {NPCName}.
+				}
+			}
 		}
 
 		Items: {
@@ -61,6 +76,11 @@ Mods: {
 
 			SlimeMinigun: {
 				// DisplayName: Slime Minigun
+				// Tooltip: ""
+			}
+
+			CowMilk: {
+				// DisplayName: Cow Milk
 				// Tooltip: ""
 			}
 		}

@@ -1,0 +1,16 @@
+Items: {
+	ibp3000: {
+		DisplayName: ИБП-3000
+		Tooltip: Угрюмый ибп прямо из под стола Лёвки, а вы чего ждали?
+	}
+
+	KirillBarbell: {
+		DisplayName: Штанга Кирилла
+		Tooltip: Тяжёлая штанга, используемая как меч. Зажмите для заряда мощного удара!
+	}
+}
+
+Projectiles: {
+	Ibp3000Projectile.DisplayName: ИБП-3000
+	KirillBarbellProjectile.DisplayName: Штанга Кирилла
+}

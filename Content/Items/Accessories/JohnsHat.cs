@@ -1,7 +1,6 @@
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace LK_Ugrumiy_WP.Content.Items.Accessories
 {
@@ -13,13 +12,6 @@ namespace LK_Ugrumiy_WP.Content.Items.Accessories
     {
         // Placeholder sprite: заменить на свой спрайт в Content/Items/Accessories/JohnsHat.png
         public override string Texture => "LK_Ugrumiy_WP/Content/Items/Accessories/JohnsHat";
-
-        public override LocalizedText Tooltip => Language.GetOrRegister(
-            "Mods.LK_Ugrumiy_WP.Items.JohnsHat.Tooltip",
-            () => "'A worn-out cap with a story...'\n" +
-                  "+10% damage to human-type enemies\n" +
-                  "+5% critical strike chance\n" +
-                  "John will hunt you down if you wear this...");
 
         public override void SetDefaults()
         {

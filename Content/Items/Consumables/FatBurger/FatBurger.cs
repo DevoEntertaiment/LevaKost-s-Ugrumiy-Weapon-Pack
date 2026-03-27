@@ -78,7 +78,7 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 	/// </summary>
 	public class DietPill : ModItem
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.RestorationPotion;
+		public override string Texture => "LK_Ugrumiy_WP/Content/Items/Consumables/FatBurger/Diet_Pill";
 
 		public override void SetDefaults()
 		{

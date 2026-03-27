@@ -7,10 +7,12 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 	/// <summary>
 	/// Молоко, полученное от "коровы" (которая бык).
 	/// Восстанавливает HP и даёт небольшой бафф.
+	/// Также используется как материал для крафта.
 	/// </summary>
 	public class CowMilk : ModItem
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.MilkCarton;
+		// Собственный спрайт молока
+		public override string Texture => "LK_Ugrumiy_WP/Content/Items/Consumables/CowMilk";
 
 		public override void SetDefaults()
 		{
@@ -20,22 +22,23 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 			Item.height = 26;
 			Item.rare = ItemRarityID.Blue;
 			Item.value = Item.buyPrice(silver: 10);
-			Item.UseSound = SoundID.Item3; // звук питья
+			Item.UseSound = SoundID.Item3;
 			Item.useTime = 20;
 			Item.useAnimation = 20;
 			Item.useStyle = ItemUseStyleID.DrinkLiquid;
 			Item.healLife = 50;
-			Item.potion = false; // нет кулдауна зелий
+			Item.potion = false;
+
+			// Делаем предмет материалом для крафта
+			Item.material = true;
 		}
 
 		public override bool? UseItem(Player player)
 		{
 			if (player.whoAmI == Main.myPlayer)
 			{
-				// Бафф Well Fed на 3 минуты
 				player.AddBuff(BuffID.WellFed, 10800);
 
-				// Белые частицы при использовании
 				for (int i = 0; i < 10; i++)
 				{
 					Dust.NewDust(

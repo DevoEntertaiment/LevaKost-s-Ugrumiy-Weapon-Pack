@@ -38,6 +38,7 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 			NPCID.Sets.AttackAverageChance[Type] = 30;
 			NPCID.Sets.HatOffsetY[Type] = 4;
 
+			// Важно для корректной работы городского NPC
 			NPCID.Sets.NPCBestiaryDrawModifiers value = new NPCID.Sets.NPCBestiaryDrawModifiers()
 			{
 				Velocity = 1f
@@ -56,15 +57,17 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 0.5f;
 			NPC.friendly = true;
-			NPC.townNPC = true; // Городской NPC — заселяется в дом, иконка на миникарте
+			NPC.townNPC = true;
 
 			AIType = NPCID.Guide;
 			AnimationType = NPCID.Guide;
+
+			// Назначаем голову для миникарты
+			NPC.aiStyle = NPCAIStyleID.Passive;
 		}
 
 		public override bool CanTownNPCSpawn(int numTownNPCs)
 		{
-			// Приходит, если у любого игрока есть сено в инвентаре
 			for (int i = 0; i < Main.maxPlayers; i++)
 			{
 				Player player = Main.player[i];
@@ -79,7 +82,7 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 
 		public override bool CheckConditions(int left, int right, int top, int bottom)
 		{
-			return true; // может заселиться в любой валидный дом
+			return true;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

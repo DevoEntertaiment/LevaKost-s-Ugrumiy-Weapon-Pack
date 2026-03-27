@@ -2,9 +2,23 @@ Mods: {
 	LK_Ugrumiy_WP: {
 		NPCs: {
 			JohnNPC: {
+				DeathMessage: Mods.LK_Ugrumiy_WP.NPCs.JohnNPC.DeathMessage
+				DisplayName: John
 			}
 
 			CowNPC: {
+				DisplayName: Cow
+
+				TownNPCMood: {
+					Content: I am content.
+					NoHome: I hate not having a home.
+					FarFromHome: I am too far from home.
+					LoveSpace: I love having so much space.
+					DislikeCrowded: I dislike how crowded I am.
+					HateCrowded: I hate how crowded I am.
+					LikeNPC_Princess: I like {NPCName}.
+					Princess_LovesNPC: I like {NPCName}.
+				}
 			}
 		}
 
@@ -13,7 +27,7 @@ Mods: {
 				Standard1: Moo... I mean, SNORT! I'm a BULL, got it?
 				Standard2: Stop calling me a cow. Do I LOOK like a cow to you?! ...Don't answer that.
 				Standard3: I'm a BULL. B-U-L-L. The horns? Purely decorative. The udders? ...Mind your own business.
-				Standard4: Yeah I give milk. Bulls can do that too. It's 2024, stop being judgmental.
+				Standard4: Yeah I give milk. Bulls can do that too. It's 2026, stop being judgmental.
 				Standard5: The Guide keeps trying to pet me. One more time and I'm charging.
 				Standard6: I only came here because I smelled hay. Don't get any ideas.
 				Cooldown: Whoa whoa, easy there! I'm not a machine. Give me a moment...
@@ -28,47 +42,123 @@ Mods: {
 
 		Items: {
 			ibp3000: {
+				DisplayName: IBP-3000
+				Tooltip:
+					'''
+					A throwable iron star infused with fallen star energy
+					Deals 69 damage per hit
+					'Shine bright like a deadly star'
+					'''
 			}
 
 			SpookyCandy: {
+				DisplayName: Spooky Candy
+				Tooltip:
+					'''
+					A perfectly normal candy. Nothing to worry about!
+					'Tastes like happiness and rainbows'
+					'''
 			}
 
 			FatBurger: {
+				DisplayName: Fat Burger
+				Tooltip:
+					'''
+					A suspiciously large burger dripping with grease
+					Heals 30 HP on use
+					'One more can't hurt, right?'
+					'''
 			}
 
 			DietPill: {
+				DisplayName: Diet Pill
+				Tooltip:
+					'''
+					Helps you get back in shape
+					'Ask your doctor before use'
+					'''
 			}
 
 			Cherry: {
+				DisplayName: Cherry
+				Tooltip:
+					'''
+					An extremely rare cherry that fully restores HP
+					'One bite and you're back in the fight'
+					'''
 			}
 
 			JohnsHat: {
+				DisplayName: John's Hat
+				Tooltip:
+					'''
+					'A worn-out cap with a story...'
+					+10% damage to all enemies
+					+5% critical strike chance
+					John will hunt you down if you wear this...
+					'''
 			}
 
 			CursedBandle: {
+				DisplayName: Cursed Bandle
+				Tooltip:
+					'''
+					'You feel something dark taking control...'
+					Once equipped, it cannot be removed until death
+					Your body moves on its own
+					'''
 			}
 
 			SlimeShotgun: {
+				DisplayName: Slime Shotgun
+				Tooltip:
+					'''
+					Fires a burst of 5 sticky white slime globs
+					Slime creates puddles on surfaces that slow enemies
+					Direct hits also apply slowness for 2 seconds
+					Does not require ammo
+					'Who loaded this thing?!'
+					'''
 			}
 
 			SlimeMinigun: {
-			}
-
-			CowMilk: {
+				DisplayName: Slime Minigun
+				Tooltip:
+					'''
+					Rapidly fires sticky white slime globs
+					Slime creates puddles on surfaces that slow enemies
+					Does not require ammo
+					'Brrrrr... *splat splat splat*'
+					'''
 			}
 
 			CowBell: {
 				DisplayName: Cow Bell
 				Tooltip: "'Ring it to summon a cow... or a bull?'"
 			}
+
+			CowMilk: {
+				DisplayName: Milk
+				Tooltip:
+					'''
+					Just regular milk, probably.....
+					Restores 50 HP and grants Well Fed
+					'Don't ask where it came from'
+					'''
+			}
 		}
 
 		Buffs: {
 			CherryCooldown: {
+				DisplayName: Cherry Cooldown
+				Description: You can't eat another cherry yet...
 			}
 		}
 
 		Projectiles: {
+			Ibp3000Projectile.DisplayName: IBP-3000
+			SlimeGlob.DisplayName: Slime Glob
+			SlimePuddle.DisplayName: Slime Puddle
 		}
 	}
 }

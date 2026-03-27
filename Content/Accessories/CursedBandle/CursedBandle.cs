@@ -1,19 +1,12 @@
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace LK_Ugrumiy_WP.Content.Accessories
 {
 	public class CursedBandle : ModItem
 	{
 		public override string Texture => "LK_Ugrumiy_WP/Content/Accessories/CursedBandle/CursedBandle";
-
-		public override LocalizedText Tooltip => Language.GetOrRegister(
-			"Mods.LK_Ugrumiy_WP.Items.CursedBandle.Tooltip",
-			() => "'You feel something dark taking control...'\n" +
-				  "Once equipped, it cannot be removed until death\n" +
-				  "Your body moves on its own");
 
 		public override void SetDefaults()
 		{

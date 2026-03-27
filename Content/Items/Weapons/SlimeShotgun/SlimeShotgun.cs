@@ -78,12 +78,11 @@ namespace LK_Ugrumiy_WP.Content.Items.Weapons
 
 		public override void AddRecipes()
 		{
-			CreateRecipe()
-				.AddIngredient(ItemID.Boomstick, 1)
-				.AddIngredient(ItemID.Gel, 50)
-				.AddIngredient(ItemID.SlimeBlock, 20)
-				.AddTile(TileID.Anvils)
-				.Register();
-		}
+            CreateRecipe()
+                .AddIngredient(ItemID.Boomstick, 1)
+                .AddIngredient(ModContent.ItemType<Consumables.CowMilk>(), 3)
+                .AddTile(TileID.Anvils)
+                .Register();
+        }
 	}
 }

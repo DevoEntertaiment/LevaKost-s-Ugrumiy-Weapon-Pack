@@ -1,5 +1,4 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
@@ -25,8 +24,7 @@ namespace LK_Ugrumiy_WP.Content.NPCs
             "Mods.LK_Ugrumiy_WP.NPCs.JohnNPC.DisplayName",
             () => "John");
 
-        // Уникальное сообщение при смерти
-        public override LocalizedText DeathMessage => this.GetLocalization("DeathMessage");
+
 
         public override void SetStaticDefaults()
         {
@@ -111,8 +109,8 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 
         public override void ModifyNPCLoot(NPCLoot npcLoot)
         {
-            // 15% шанс выпадения шляпы (1 из 6.67 ≈ 15%)
-            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<JohnsHat>(), 1, 1, 7));
+            // ~14% шанс выпадения шляпы (1 из 7)
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<JohnsHat>(), 7));
         }
 
         public override void TownNPCAttackStrength(ref int damage, ref float knockback)
@@ -139,9 +137,8 @@ namespace LK_Ugrumiy_WP.Content.NPCs
             randomOffset = 2f;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        public override void PostAI()
         {
-            // Проверка: если рядом игрок в шляпе - становимся враждебным
             for (int i = 0; i < Main.maxPlayers; i++)
             {
                 Player player = Main.player[i];
@@ -154,18 +151,16 @@ namespace LK_Ugrumiy_WP.Content.NPCs
                         NPC.damage = 40;
                         NPC.aiStyle = NPCAIStyleID.Fighter;
 
-                        // Сообщение только один раз
-                        if (NPC.aiAction == 0)
+                        if (NPC.localAI[0] == 0f)
                         {
                             string msg = Language.GetTextValue("Mods.LK_Ugrumiy_WP.Dialogue.JohnNPC.AngryChat");
                             Main.NewText(msg, 255, 100, 100);
-                            NPC.aiAction = 1;
+                            NPC.localAI[0] = 1f;
                         }
                         break;
                     }
                 }
             }
-            return true;
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)

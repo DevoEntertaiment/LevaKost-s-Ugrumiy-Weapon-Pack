@@ -1,4 +1,4 @@
-Mods: {
+﻿Mods: {
 	LK_Ugrumiy_WP: {
 		NPCs: {
 			JohnNPC: {
@@ -23,6 +23,14 @@ Mods: {
 		}
 
 		Dialogue: {
+			JohnNPC: {
+				Angry: That's MY hat! Give it back or I'll take it by force!
+				AngryChat: John doesn't like that you're wearing his hat...
+				Standard1: The caves... they change a man. Trust me.
+				Standard2: I've seen things down here you wouldn't believe.
+				Standard3: Don't mind me. Just passing through.
+			}
+
 			CowNPC: {
 				Standard1: Moo... I mean, SNORT! I'm a BULL, got it?
 				Standard2: Stop calling me a cow. Do I LOOK like a cow to you?! ...Don't answer that.

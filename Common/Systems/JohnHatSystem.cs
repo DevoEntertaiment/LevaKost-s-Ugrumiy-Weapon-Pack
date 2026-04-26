@@ -1,4 +1,4 @@
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
 
 namespace LK_Ugrumiy_WP
@@ -10,7 +10,7 @@ namespace LK_Ugrumiy_WP
     public class JohnHatSystem : ModSystem
     {
         // Отслеживает кто из игроков носит шляпу
-        public bool[] playerWearingHat = new bool[255];
+        public bool[] playerWearingHat = new bool[Main.maxPlayers];
 
         public override void ClearWorld()
         {

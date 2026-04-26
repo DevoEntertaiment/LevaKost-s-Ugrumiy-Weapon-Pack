@@ -1,9 +1,9 @@
-Mods: {
+﻿Mods: {
 	LK_Ugrumiy_WP: {
 		NPCs: {
 			JohnNPC: {
 				// DeathMessage: Mods.LK_Ugrumiy_WP.NPCs.JohnNPC.DeathMessage
-				DisplayName: ����
+				DisplayName: Джон
 			}
 
 			CowNPC: {
@@ -23,6 +23,14 @@ Mods: {
 		}
 
 		Dialogue: {
+			JohnNPC: {
+				Angry: Это МОЯ шляпа! Верни её или я заберу силой!
+				AngryChat: Джону не нравится, что вы носите его шляпу...
+				Standard1: Пещеры... они меняют человека. Поверь мне.
+				Standard2: Я видел тут такое, во что ты не поверишь.
+				Standard3: Не обращай на меня внимания. Просто прохожу мимо.
+			}
+
 			CowNPC: {
 				Standard1: Муу... то есть, ФЫРК! Я БЫК, понятно?!
 				Standard2: Хватит называть меня коровой. Я ПОХОЖ на корову?! ...Не отвечай.

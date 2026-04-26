@@ -29,3 +29,5 @@ jobs:
 
       - name: Build mod
         run: dotnet build --warnaserror
+        env:
+          LD_LIBRARY_PATH: ${{ github.workspace }}/../Libraries/Native/Linux

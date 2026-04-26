@@ -29,14 +29,6 @@ namespace LK_Ugrumiy_WP.Content.NPCs
         public override void SetStaticDefaults()
         {
             Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.Guide];
-
-            NPCID.Sets.ExtraFramesCount[Type] = 9;
-            NPCID.Sets.AttackFrameCount[Type] = 4;
-            NPCID.Sets.DangerDetectRange[Type] = 700;
-            NPCID.Sets.AttackType[Type] = 0;
-            NPCID.Sets.AttackTime[Type] = 90;
-            NPCID.Sets.AttackAverageChance[Type] = 30;
-            NPCID.Sets.HatOffsetY[Type] = 4;
         }
 
         public override void SetDefaults()
@@ -111,30 +103,6 @@ namespace LK_Ugrumiy_WP.Content.NPCs
         {
             // ~14% шанс выпадения шляпы (1 из 7)
             npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<JohnsHat>(), 7));
-        }
-
-        public override void TownNPCAttackStrength(ref int damage, ref float knockback)
-        {
-            damage = 40;
-            knockback = 4f;
-        }
-
-        public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown)
-        {
-            cooldown = 30;
-            randExtraCooldown = 30;
-        }
-
-        public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
-        {
-            projType = ProjectileID.ThrowingKnife;
-            attackDelay = 1;
-        }
-
-        public override void TownNPCAttackProjSpeed(ref float multiplier, ref float gravityCorrection, ref float randomOffset)
-        {
-            multiplier = 12f;
-            randomOffset = 2f;
         }
 
         public override void PostAI()

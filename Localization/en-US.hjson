@@ -2,7 +2,6 @@
 	LK_Ugrumiy_WP: {
 		NPCs: {
 			JohnNPC: {
-				DeathMessage: Mods.LK_Ugrumiy_WP.NPCs.JohnNPC.DeathMessage
 				DisplayName: John
 			}
 
@@ -46,7 +45,10 @@
 			}
 		}
 
-		Bestiary.CowNPC: A 'cow' that insists it's actually a bull. Provides milk if you have hay. Don't ask where the milk comes from.
+		Bestiary: {
+			CowNPC: A 'cow' that insists it's actually a bull. Provides milk if you have hay. Don't ask where the milk comes from.
+			JohnNPC: A grizzled old man who wanders the caverns alone. He's very attached to his hat. Don't wear it around him.
+		}
 
 		Items: {
 			ibp3000: {
@@ -161,6 +163,10 @@
 				DisplayName: Cherry Cooldown
 				Description: You can't eat another cherry yet...
 			}
+		}
+
+		UI: {
+			GrabMilk: Grab Milk
 		}
 
 		Projectiles: {

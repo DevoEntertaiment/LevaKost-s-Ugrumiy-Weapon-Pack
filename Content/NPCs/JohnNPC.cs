@@ -5,7 +5,7 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.Utilities;
+using LK_Ugrumiy_WP.Common.Systems;
 using LK_Ugrumiy_WP.Content.Items.Accessories;
 
 namespace LK_Ugrumiy_WP.Content.NPCs
@@ -23,8 +23,6 @@ namespace LK_Ugrumiy_WP.Content.NPCs
         public override LocalizedText DisplayName => Language.GetOrRegister(
             "Mods.LK_Ugrumiy_WP.NPCs.JohnNPC.DisplayName",
             () => "John");
-
-
 
         public override void SetStaticDefaults()
         {
@@ -63,40 +61,6 @@ namespace LK_Ugrumiy_WP.Content.NPCs
             {
                 Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood);
             }
-        }
-
-        public override string GetChat()
-        {
-            // Проверяем, носит ли кто-то шляпу
-            for (int i = 0; i < Main.maxPlayers; i++)
-            {
-                Player player = Main.player[i];
-                if (player.active && !player.dead)
-                {
-                    var johnSystem = ModContent.GetInstance<JohnHatSystem>();
-                    if (johnSystem.playerWearingHat[i])
-                    {
-                        return Language.GetTextValue("Mods.LK_Ugrumiy_WP.Dialogue.JohnNPC.Angry");
-                    }
-                }
-            }
-
-            // Обычные диалоги
-            WeightedRandom<string> chat = new WeightedRandom<string>();
-            chat.Add(Language.GetTextValue("Mods.LK_Ugrumiy_WP.Dialogue.JohnNPC.Standard1"));
-            chat.Add(Language.GetTextValue("Mods.LK_Ugrumiy_WP.Dialogue.JohnNPC.Standard2"));
-            chat.Add(Language.GetTextValue("Mods.LK_Ugrumiy_WP.Dialogue.JohnNPC.Standard3"));
-            return chat;
-        }
-
-        public override void SetChatButtons(ref string button, ref string button2)
-        {
-            button = Language.GetTextValue("LegacyInterface.27"); // "Talk"
-        }
-
-        public override void OnChatButtonClicked(bool firstButton, ref string shop)
-        {
-            // Нет магазина
         }
 
         public override void ModifyNPCLoot(NPCLoot npcLoot)

@@ -122,7 +122,7 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 
 		public override void SetChatButtons(ref string button, ref string button2)
 		{
-			button = "Grab Milk";
+			button = Language.GetTextValue("Mods.LK_Ugrumiy_WP.UI.GrabMilk");
 		}
 
 		public override void OnChatButtonClicked(bool firstButton, ref string shop)

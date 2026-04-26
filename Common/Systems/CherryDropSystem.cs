@@ -7,8 +7,6 @@ namespace LK_Ugrumiy_WP.Common.Systems
 {
     public class CherryDropSystem : GlobalNPC
     {
-        public override bool InstancePerEntity => true;
-
         public override void OnKill(NPC npc)
         {
             if (!Main.hardMode || !NPC.downedPlantBoss)

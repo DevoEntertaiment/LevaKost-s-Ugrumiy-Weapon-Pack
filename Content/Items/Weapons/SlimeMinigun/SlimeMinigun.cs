@@ -9,7 +9,7 @@ namespace LK_Ugrumiy_WP.Content.Items.Weapons
 	/// <summary>
 	/// Слизневая мини-акула: автоматическое оружие с высокой скорострельностью.
 	/// Стреляет каплями белой слизи, как Minishark — пулями.
-	/// 33% шанс не потратить выстрел.
+	/// Не требует боеприпасов.
 	/// </summary>
 	public class SlimeMinigun : ModItem
 	{
@@ -59,11 +59,6 @@ namespace LK_Ugrumiy_WP.Content.Items.Weapons
 			);
 
 			return false;
-		}
-
-		public override bool CanConsumeAmmo(Item ammo, Player player)
-		{
-			return Main.rand.NextFloat() > 0.33f;
 		}
 
 		public override Vector2? HoldoutOffset()

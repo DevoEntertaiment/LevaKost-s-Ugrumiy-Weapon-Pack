@@ -1,7 +1,7 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace LK_Ugrumiy_WP
+namespace LK_Ugrumiy_WP.Common.Systems
 {
     /// <summary>
     /// Система отслеживания игроков, носящих шляпу Джона.

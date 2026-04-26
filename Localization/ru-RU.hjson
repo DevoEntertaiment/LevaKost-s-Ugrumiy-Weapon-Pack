@@ -2,7 +2,6 @@
 	LK_Ugrumiy_WP: {
 		NPCs: {
 			JohnNPC: {
-				// DeathMessage: Mods.LK_Ugrumiy_WP.NPCs.JohnNPC.DeathMessage
 				DisplayName: Джон
 			}
 
@@ -10,14 +9,14 @@
 				DisplayName: Корова
 
 				TownNPCMood: {
-					// Content: I am content.
-					// NoHome: I hate not having a home.
-					// FarFromHome: I am too far from home.
-					// LoveSpace: I love having so much space.
-					// DislikeCrowded: I dislike how crowded I am.
-					// HateCrowded: I hate how crowded I am.
-					// LikeNPC_Princess: I like {NPCName}.
-					// Princess_LovesNPC: I like {NPCName}.
+					Content: Мне здесь нравится.
+					NoHome: Ненавижу жить без дома.
+					FarFromHome: Я слишком далеко от дома.
+					LoveSpace: Обожаю, когда много места.
+					DislikeCrowded: Слишком тесно тут.
+					HateCrowded: Я ненавижу эту толкучку!
+					LikeNPC_Princess: Мне нравится {NPCName}.
+					Princess_LovesNPC: Мне нравится {NPCName}.
 				}
 			}
 		}
@@ -46,7 +45,10 @@
 			}
 		}
 
-		Bestiary.CowNPC: "'Корова', которая утверждает, что она бык. Даёт молоко, если у вас есть сено. Не спрашивайте, откуда оно берётся."
+		Bestiary: {
+			CowNPC: "'Корова', которая утверждает, что она бык. Даёт молоко, если у вас есть сено. Не спрашивайте, откуда оно берётся."
+			JohnNPC: "Суровый старик, бродящий по пещерам в одиночку. Очень привязан к своей шляпе. Не носите её при нём."
+		}
 
 		Items: {
 			ibp3000: {
@@ -154,6 +156,10 @@
 					'Не спрашивай, откуда оно'
 					'''
 			}
+		}
+
+		UI: {
+			GrabMilk: Взять молоко
 		}
 
 		Buffs: {

@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout mod source
         uses: actions/checkout@v4
+        with:
+          path: LK_Ugrumiy_WP
 
       - name: Setup .NET 8.0
         uses: actions/setup-dotnet@v4
@@ -27,15 +29,16 @@ jobs:
       - name: Download tModLoader
         run: |
           curl -sL "https://github.com/tModLoader/tModLoader/releases/latest/download/tModLoader.zip" -o /tmp/tModLoader.zip
-          unzip -qo /tmp/tModLoader.zip -d "$GITHUB_WORKSPACE/.."
+          unzip -qo /tmp/tModLoader.zip -d "$GITHUB_WORKSPACE"
 
       - name: Setup tModLoader.targets
-        run: cp "$GITHUB_WORKSPACE/../tMLMod.targets" "$GITHUB_WORKSPACE/../tModLoader.targets"
+        run: cp "$GITHUB_WORKSPACE/tMLMod.targets" "$GITHUB_WORKSPACE/tModLoader.targets"
 
       - name: Build mod
         run: dotnet build
+        working-directory: LK_Ugrumiy_WP
         env:
-          LD_LIBRARY_PATH: ${{ github.workspace }}/../Libraries/Native/Linux
+          LD_LIBRARY_PATH: ${{ github.workspace }}/Libraries/Native/Linux
 
       - name: Find .tmod file
         id: find_tmod

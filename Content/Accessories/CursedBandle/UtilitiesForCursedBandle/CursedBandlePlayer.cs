@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.GameInput;
@@ -28,14 +28,14 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 			if (!isCursed)
 				return;
 
-			// Загружаем мозг при первом включении
+			// Р—Р°РіСЂСѓР¶Р°РµРј РјРѕР·Рі РїСЂРё РїРµСЂРІРѕРј РІРєР»СЋС‡РµРЅРёРё
 			if (!brainLoaded)
 			{
 				ai.LoadBrain();
 				brainLoaded = true;
 			}
 
-			// 1. Обнуляем ввод игрока
+			// 1. РћР±РЅСѓР»СЏРµРј РІРІРѕРґ РёРіСЂРѕРєР°
 			Player.controlLeft = false;
 			Player.controlRight = false;
 			Player.controlUp = false;
@@ -52,15 +52,15 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 			Player.controlQuickMana = false;
 			Player.controlInv = false;
 
-			// 2. Блокируем интерфейс
+			// 2. Р‘Р»РѕРєРёСЂСѓРµРј РёРЅС‚РµСЂС„РµР№СЃ
 			if (Player.chest != -1)
 				Player.chest = -1;
 			Main.playerInventory = false;
 
-			// 3. ИИ принимает решения
+			// 3. РР РїСЂРёРЅРёРјР°РµС‚ СЂРµС€РµРЅРёСЏ
 			ai.Update(Player);
 
-			// 4. Подмена мыши на цель
+			// 4. РџРѕРґРјРµРЅР° РјС‹С€Рё РЅР° С†РµР»СЊ
 			if (aiTargetPosition != Vector2.Zero)
 			{
 				Vector2 screenPos = aiTargetPosition - Main.screenPosition;
@@ -106,7 +106,7 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 				return;
 			}
 
-			for (int i = 3; i < 3 + Player.extraAccessorySlots + 7; i++)
+			for (int i = 3; i < Player.armor.Length; i++)
 			{
 				if (Player.armor[i].type == cursedItemType)
 				{
@@ -119,7 +119,7 @@ namespace LK_Ugrumiy_WP.Content.Accessories
 
 		public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
 		{
-			// ИИ получает штраф за смерть и сохраняет знания
+			// РР РїРѕР»СѓС‡Р°РµС‚ С€С‚СЂР°С„ Р·Р° СЃРјРµСЂС‚СЊ Рё СЃРѕС…СЂР°РЅСЏРµС‚ Р·РЅР°РЅРёСЏ
 			ai.OnDeath();
 
 			if (cursedSlotIndex >= 0 && cursedSlotIndex < Player.armor.Length

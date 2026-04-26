@@ -2,7 +2,7 @@ Mods: {
 	LK_Ugrumiy_WP: {
 		NPCs: {
 			JohnNPC: {
-				DisplayName: ����
+				DisplayName: Джон
 				// DeathMessage: Mods.LK_Ugrumiy_WP.NPCs.JohnNPC.DeathMessage
 			}
 

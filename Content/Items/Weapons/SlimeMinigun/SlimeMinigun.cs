@@ -1,4 +1,4 @@
-using Terraria;
+п»їusing Terraria;
 using Terraria.ID;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework;
 namespace LK_Ugrumiy_WP.Content.Items.Weapons
 {
 	/// <summary>
-	/// Слизневая мини-акула: автоматическое оружие с высокой скорострельностью.
-	/// Стреляет каплями белой слизи, как Minishark — пулями.
-	/// 33% шанс не потратить выстрел.
+	/// РЎР»РёР·РЅРµРІР°СЏ РјРёРЅРё-Р°РєСѓР»Р°: Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРµ РѕСЂСѓР¶РёРµ СЃ РІС‹СЃРѕРєРѕР№ СЃРєРѕСЂРѕСЃС‚СЂРµР»СЊРЅРѕСЃС‚СЊСЋ.
+	/// РЎС‚СЂРµР»СЏРµС‚ РєР°РїР»СЏРјРё Р±РµР»РѕР№ СЃР»РёР·Рё, РєР°Рє Minishark вЂ” РїСѓР»СЏРјРё.
+	/// 33% С€Р°РЅСЃ РЅРµ РїРѕС‚СЂР°С‚РёС‚СЊ РІС‹СЃС‚СЂРµР».
 	/// </summary>
 	public class SlimeMinigun : ModItem
 	{

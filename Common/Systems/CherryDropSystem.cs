@@ -1,4 +1,4 @@
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using LK_Ugrumiy_WP.Content.Items.Consumables;

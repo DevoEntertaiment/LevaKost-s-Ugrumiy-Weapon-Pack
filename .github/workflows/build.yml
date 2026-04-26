@@ -1,0 +1,31 @@
+name: Build Mod
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout mod source
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Download tModLoader
+        run: |
+          curl -sL "https://github.com/tModLoader/tModLoader/releases/latest/download/tModLoader.zip" -o tModLoader.zip
+          unzip -qo tModLoader.zip -d ../tModLoader
+
+      - name: Setup tModLoader.targets
+        run: cp ../tModLoader/tMLMod.targets ../tModLoader.targets
+
+      - name: Build mod
+        run: dotnet build --warnaserror

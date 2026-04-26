@@ -1,7 +1,9 @@
 ﻿using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.Chat;
 using Terraria.DataStructures;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace LK_Ugrumiy_WP.Content.Items.Consumables
@@ -110,7 +112,7 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 
 			// Убиваем игрока
 			player.KillMe(
-				PlayerDeathReason.ByCustomReason($"{player.name} shouldn't have eaten that candy..."),
+				PlayerDeathReason.ByCustomReason(NetworkText.FromLiteral($"{player.name} shouldn't have eaten that candy...")),
 				999999,
 				0
 			);

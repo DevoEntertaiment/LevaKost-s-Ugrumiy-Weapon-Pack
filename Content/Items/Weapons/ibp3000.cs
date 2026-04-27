@@ -1,4 +1,4 @@
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -9,15 +9,15 @@ namespace LK_Ugrumiy_WP.Content.Items.Weapons
         public override void SetDefaults()
         {
             // Тип предмета - метательный
-            Item.DamageType = DamageClass.Throwing;
+            Item.DamageType = DamageClass.Ranged;
             Item.damage = 69;
             Item.knockBack = 6f;
             Item.crit = 4;
 
-            // Скорость броска
-            Item.shootSpeed = 12f;
-            Item.useAnimation = 20;
-            Item.useTime = 20;
+            // Скорость броска (раньше 12f — ощущалось слишком тяжёлым)
+            Item.shootSpeed = 19f;
+            Item.useAnimation = 18;
+            Item.useTime = 18;
             Item.useStyle = ItemUseStyleID.Swing;
 
             // Снаряд

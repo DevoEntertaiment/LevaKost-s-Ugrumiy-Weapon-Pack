@@ -1,16 +1,18 @@
-using Terraria;
+п»їusing Terraria;
+using Microsoft.Xna.Framework;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace LK_Ugrumiy_WP.Content.Items.Consumables
 {
 	/// <summary>
-	/// Бургер: при каждом съедении увеличивает уровень жира.
-	/// Персонаж постепенно толстеет, получает бонусы и штрафы.
+	/// Р‘СѓСЂРіРµСЂ: РїСЂРё РєР°Р¶РґРѕРј СЃСЉРµРґРµРЅРёРё СѓРІРµР»РёС‡РёРІР°РµС‚ СѓСЂРѕРІРµРЅСЊ Р¶РёСЂР°.
+	/// РџРµСЂСЃРѕРЅР°Р¶ РїРѕСЃС‚РµРїРµРЅРЅРѕ С‚РѕР»СЃС‚РµРµС‚, РїРѕР»СѓС‡Р°РµС‚ Р±РѕРЅСѓСЃС‹ Рё С€С‚СЂР°С„С‹.
 	/// </summary>
 	public class FatBurger : ModItem
 	{
-		// Путь к собственной текстуре бургера
+		// РџСѓС‚СЊ Рє СЃРѕР±СЃС‚РІРµРЅРЅРѕР№ С‚РµРєСЃС‚СѓСЂРµ Р±СѓСЂРіРµСЂР°
 		public override string Texture => "LK_Ugrumiy_WP/Content/Items/Consumables/FatBurger/Burger_Zhirnosti";
 
 		public override void SetDefaults()
@@ -50,14 +52,14 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 						DustID.YellowTorch, 0f, -2f, 150, default, 1.2f);
 				}
 
-				if (fp.FatLevel >= 90)
-					Main.NewText("You can barely move...", 255, 100, 100);
-				else if (fp.FatLevel >= 60)
-					Main.NewText("You feel very heavy.", 255, 180, 50);
-				else if (fp.FatLevel >= 30)
-					Main.NewText("You're getting chubby.", 255, 220, 100);
-				else
-					Main.NewText("Delicious burger!", 255, 255, 150);
+				string key;
+				Color color;
+				if (fp.FatLevel >= 90) { key = "BurgerEat90"; color = new Color(255, 100, 100); }
+				else if (fp.FatLevel >= 60) { key = "BurgerEat60"; color = new Color(255, 180, 50); }
+				else if (fp.FatLevel >= 30) { key = "BurgerEat30"; color = new Color(255, 220, 100); }
+				else { key = "BurgerEat0"; color = new Color(255, 255, 150); }
+
+				Main.NewText(Language.GetTextValue("Mods.LK_Ugrumiy_WP.Misc." + key), color.R, color.G, color.B);
 			}
 
 			return true;
@@ -74,7 +76,7 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 	}
 
 	/// <summary>
-	/// Диетическая таблетка: снижает жир.
+	/// Р”РёРµС‚РёС‡РµСЃРєР°СЏ С‚Р°Р±Р»РµС‚РєР°: СЃРЅРёР¶Р°РµС‚ Р¶РёСЂ.
 	/// </summary>
 	public class DietPill : ModItem
 	{
@@ -106,7 +108,7 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 			{
 				var fp = player.GetModPlayer<FatPlayer>();
 				fp.RemoveFat(15);
-				Main.NewText("You feel lighter!", 100, 255, 100);
+				Main.NewText(Language.GetTextValue("Mods.LK_Ugrumiy_WP.Misc.DietPillUse"), 100, 255, 100);
 
 				for (int i = 0; i < 15; i++)
 				{

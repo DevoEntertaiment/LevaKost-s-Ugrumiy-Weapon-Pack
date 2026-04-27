@@ -198,8 +198,15 @@ Mods: {
 			}
 
 			OppressorMK2Item: {
-				DisplayName: Oppressor M K2 Item
-				Tooltip: ""
+				DisplayName: Oppressor MK2
+				Tooltip:
+					'''
+					Summons the Oppressor MK2 — a sleek, definitely-not-stolen flying machine
+					Infinite flight and immunity to fall damage
+					Double-tap left or right to dash forward (5s cooldown)
+					A cooldown bar appears under your character while mounted
+					'Manufactured in a place that doesn't exist, by a company that denies its existence'
+					'''
 			}
 		}
 
@@ -215,8 +222,8 @@ Mods: {
 			}
 
 			OppressorMK2Buff: {
-				DisplayName: Oppressor M K2 Buff
-				Description: Mods.LK_Ugrumiy_WP.Buffs.OppressorMK2Buff.Description
+				DisplayName: Oppressor MK2
+				Description: Cruising on the Oppressor MK2.
 			}
 		}
 

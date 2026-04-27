@@ -198,8 +198,15 @@ Mods: {
 			}
 
 			OppressorMK2Item: {
-				// DisplayName: Oppressor M K2 Item
-				// Tooltip: ""
+				DisplayName: Угнетатель MK2
+				Tooltip:
+					'''
+					Вызывает «Угнетателя MK2» — стильный, явно-не-угнанный летательный аппарат
+					Бесконечный полёт и иммунитет к урону от падения
+					Двойной тап ←/→ — рывок вперёд (перезарядка 5 секунд)
+					Под персонажем во время езды появляется шкала перезарядки рывка
+					'Произведено в месте, которого нет, компанией, которая отрицает своё существование'
+					'''
 			}
 		}
 
@@ -215,8 +222,8 @@ Mods: {
 			}
 
 			OppressorMK2Buff: {
-				// DisplayName: Oppressor M K2 Buff
-				// Description: Mods.LK_Ugrumiy_WP.Buffs.OppressorMK2Buff.Description
+				DisplayName: Угнетатель MK2
+				Description: Вы парите на «Угнетателе MK2».
 			}
 		}
 

@@ -10,7 +10,7 @@
     <a href="https://github.com/LevaKost/Ugrumiy-Weapon-Pack/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/LevaKost/Ugrumiy-Weapon-Pack?display_name=tag&sort=semver" /></a>
     <a href="https://github.com/LevaKost/Ugrumiy-Weapon-Pack/releases/latest"><img alt="Downloads" src="https://img.shields.io/github/downloads/LevaKost/Ugrumiy-Weapon-Pack/total" /></a>
     <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-blueviolet" />
-    <img alt="tModLoader" src="https://img.shields.io/badge/tModLoader-1.4.4-orange" />
+    <img alt="tModLoader" src="https://img.shields.io/badge/tModLoader-1.4.4.9-orange" />
   </p>
 </div>
 
@@ -204,8 +204,9 @@ GitHub Actions ([release.yml](.github/workflows/release.yml)) автоматич
 
 ## Авторы
 
-- **LelaPo** — гейм-дизайн, контент, спрайты.
+- **VanyaSvetoslav** — гейм-дизайн, контент, спрайты.
 - **Kotya** — программирование, ИИ, системы.
+- **LelaPo** — придумал мод, даёт идеи
 
 Идеи, баги и пулл-реквесты приветствуются — открывайте
 [issue](https://github.com/LevaKost/Ugrumiy-Weapon-Pack/issues) или PR.

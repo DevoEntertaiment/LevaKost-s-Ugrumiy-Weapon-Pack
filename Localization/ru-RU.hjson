@@ -1,9 +1,7 @@
-﻿Mods: {
+Mods: {
 	LK_Ugrumiy_WP: {
 		NPCs: {
-			JohnNPC: {
-				DisplayName: Джон
-			}
+			JohnNPC.DisplayName: Джон
 
 			CowNPC: {
 				DisplayName: Корова
@@ -32,6 +30,12 @@
 					HateCrowded: В этой толпе я даже паять не могу!
 					LikeNPC_Princess: Мне нравится {NPCName}.
 					Princess_LovesNPC: Мне нравится {NPCName}.
+					// LikeBiome: Мне нравится {BiomeName}.
+					// DislikeBiome: Мне не нравится {BiomeName}.
+					// LoveNPC: Я люблю {NPCName}.
+					// LikeNPC: Мне нравится {NPCName}.
+					// DislikeNPC: Мне не нравится {NPCName}.
+					// HateNPC: Я ненавижу {NPCName}.
 				}
 			}
 		}
@@ -71,11 +75,21 @@
 
 		Bestiary: {
 			CowNPC: "'Корова', которая утверждает, что она бык. Даёт молоко, если у вас есть сено. Не спрашивайте, откуда оно берётся."
-			JohnNPC: "Суровый старик, бродящий по пещерам в одиночку. Очень привязан к своей шляпе. Не носите её при нём."
-			MechanicMerriweatherNPC: "Странствующий техник, заселяющийся после падения Стены плоти. Торгует гаечными ключами, проводом и достаточным количеством нажимных плит, чтобы испортить кому-нибудь день."
+			JohnNPC: Суровый старик, бродящий по пещерам в одиночку. Очень привязан к своей шляпе. Не носите её при нём.
+			MechanicMerriweatherNPC: Странствующий техник, заселяющийся после падения Стены плоти. Торгует гаечными ключами, проводом и достаточным количеством нажимных плит, чтобы испортить кому-нибудь день.
 		}
 
 		Items: {
+			ibp3000: {
+				DisplayName: ИБП-3000
+				Tooltip:
+					'''
+					Метательный блок питания, потрескивающий чистым электричеством
+					Наносит 69 урона и бьёт током при попадании
+					'Защита от перенапряжения? Не слышал.'
+					'''
+			}
+
 			VxeMouse: {
 				DisplayName: VXE R1 SE+
 				Tooltip:
@@ -84,16 +98,6 @@
 					Дрожит, бьёт врагов и разлетается при сильном ударе
 					Не может проходить сквозь стены
 					'8000 Гц чистого дофамина'
-					'''
-			}
-
-			ibp3000: {
-				DisplayName: ИБП-3000
-				Tooltip:
-					'''
-					Метательный блок питания, потрескивающий чистым электричеством
-					Наносит 69 урона и бьёт током при попадании
-					'Защита от перенапряжения? Не слышал.'
 					'''
 			}
 
@@ -192,18 +196,10 @@
 					'Не спрашивай, откуда оно'
 					'''
 			}
-		}
 
-		UI: {
-			GrabMilk: Взять молоко
-
-			FatBar: {
-				Label: "Жир: {0}/{1}"
-				Stage0: Норма
-				Stage1: Полноват
-				Stage2: Толстый
-				Stage3: Ожирение
-				Stage4: Морбидное ожирение
+			OppressorMK2Item: {
+				// DisplayName: Oppressor M K2 Item
+				// Tooltip: ""
 			}
 		}
 
@@ -216,6 +212,11 @@
 			CowBellCooldown: {
 				DisplayName: Откат коровы
 				Description: Корове нужно перевести дух перед следующим призывом...
+			}
+
+			OppressorMK2Buff: {
+				// DisplayName: Oppressor M K2 Buff
+				// Description: Mods.LK_Ugrumiy_WP.Buffs.OppressorMK2Buff.Description
 			}
 		}
 
@@ -232,8 +233,8 @@
 			BurgerEat60: Ты чувствуешь себя очень тяжёлым.
 			BurgerEat90: Ты еле двигаешься...
 			DietPillUse: Стало легче!
-			FatLostOnDeath: "Ты немного похудел! (-{0})"
-			BurningFat: "Сжигаем жир! ({0}/{1})"
+			FatLostOnDeath: Ты немного похудел! (-{0})
+			BurningFat: Сжигаем жир! ({0}/{1})
 		}
 
 		CandyJokes: {
@@ -259,10 +260,24 @@
 			Joke20: Мне говорили, что конфеты меня не убьют. Они лгали.
 		}
 
+		UI: {
+			GrabMilk: Взять молоко
+
+			FatBar: {
+				Label: Жир: {0}/{1}
+				Stage0: Норма
+				Stage1: Полноват
+				Stage2: Толстый
+				Stage3: Ожирение
+				Stage4: Морбидное ожирение
+			}
+		}
+
 		Projectiles: {
 			Ibp3000Projectile.DisplayName: ИБП-3000
 			SlimeGlob.DisplayName: Слизневый сгусток
 			SlimePuddle.DisplayName: Слизневая лужа
+			// VxeMouseProjectile.DisplayName: Vxe Mouse Projectile
 		}
 	}
 }

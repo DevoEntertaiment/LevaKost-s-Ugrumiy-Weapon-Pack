@@ -1,9 +1,7 @@
-﻿Mods: {
+Mods: {
 	LK_Ugrumiy_WP: {
 		NPCs: {
-			JohnNPC: {
-				DisplayName: John
-			}
+			JohnNPC.DisplayName: John
 
 			CowNPC: {
 				DisplayName: Cow
@@ -32,6 +30,12 @@
 					HateCrowded: I can't hear myself solder in this crowd!
 					LikeNPC_Princess: I like {NPCName}.
 					Princess_LovesNPC: I like {NPCName}.
+					LikeBiome: Мне нравится {BiomeName}.
+					DislikeBiome: Мне не нравится {BiomeName}.
+					LoveNPC: Я люблю {NPCName}.
+					LikeNPC: Мне нравится {NPCName}.
+					DislikeNPC: Мне не нравится {NPCName}.
+					HateNPC: Я ненавижу {NPCName}.
 				}
 			}
 		}
@@ -192,6 +196,11 @@
 					'Don't ask where it came from'
 					'''
 			}
+
+			OppressorMK2Item: {
+				DisplayName: Oppressor M K2 Item
+				Tooltip: ""
+			}
 		}
 
 		Buffs: {
@@ -203,6 +212,11 @@
 			CowBellCooldown: {
 				DisplayName: Cow Cooldown
 				Description: The cow needs a moment before another summon...
+			}
+
+			OppressorMK2Buff: {
+				DisplayName: Oppressor M K2 Buff
+				Description: Mods.LK_Ugrumiy_WP.Buffs.OppressorMK2Buff.Description
 			}
 		}
 
@@ -219,8 +233,8 @@
 			BurgerEat60: You feel very heavy.
 			BurgerEat90: You can barely move...
 			DietPillUse: You feel lighter!
-			FatLostOnDeath: "You lost some fat! (-{0})"
-			BurningFat: "Burning fat! ({0}/{1})"
+			FatLostOnDeath: You lost some fat! (-{0})
+			BurningFat: Burning fat! ({0}/{1})
 		}
 
 		CandyJokes: {
@@ -250,7 +264,7 @@
 			GrabMilk: Grab Milk
 
 			FatBar: {
-				Label: "Fat: {0}/{1}"
+				Label: Fat: {0}/{1}
 				Stage0: Normal
 				Stage1: Chubby
 				Stage2: Fat
@@ -263,6 +277,7 @@
 			Ibp3000Projectile.DisplayName: IBP-3000
 			SlimeGlob.DisplayName: Slime Glob
 			SlimePuddle.DisplayName: Slime Puddle
+			VxeMouseProjectile.DisplayName: Vxe Mouse Projectile
 		}
 	}
 }

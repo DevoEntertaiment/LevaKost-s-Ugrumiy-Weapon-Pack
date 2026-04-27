@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -13,15 +13,7 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 		internal float scaleX = 1f;
 		internal float scaleY = 1f;
 
-		public override void FrameEffects()
-		{
-			var fp = Player.GetModPlayer<FatPlayer>();
-			if (fp.FatLevel <= 0f) return;
 
-			float ratio = fp.FatLevel / FatPlayer.MaxFat;
-			int extraWidth = (int)(ratio * Player.defaultWidth * 0.3f);
-			Player.width = Player.defaultWidth + extraWidth;
-		}
 
 		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
 		{
@@ -34,7 +26,6 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 			float sy = 1f + ratio * 0.1f;
 
 			drawInfo.Position.X -= (sx - 1f) * drawInfo.drawPlayer.width * 0.5f;
-			drawInfo.Position.Y -= (sy - 1f) * drawInfo.drawPlayer.height;
 
 			drawInfo.drawPlayer.GetModPlayer<FatPlayerScale>().scaleX = sx;
 			drawInfo.drawPlayer.GetModPlayer<FatPlayerScale>().scaleY = sy;
@@ -88,34 +79,89 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 			{
 				float ratio = fp.FatLevel / FatPlayer.MaxFat;
 
-				Vector2 bellyPos = feetCenter - new Vector2(0f, drawInfo.drawPlayer.height * 0.45f * sY);
+				// Центр живота — чуть ниже середины тела
+				Vector2 bellyCenter = feetCenter - new Vector2(0f, drawInfo.drawPlayer.height * 0.42f * sY);
 
-				float bW = (6f + ratio * 12f) * sX;
-				float bH = (3f + ratio * 8f) * sY;
+				// Полуоси эллипса
+				float halfW = (5f + ratio * 10f) * sX;
+				float halfH = (3f + ratio * 7f) * sY;
+				int strips = Math.Max(4, (int)(halfH * 2)); // Количество горизонтальных полосок
 
-				Color bellyColor = Color.Lerp(
-					new Color(255, 230, 200),
-					new Color(255, 200, 160),
+				Color baseColor = Color.Lerp(
+					new Color(255, 220, 190),
+					new Color(240, 180, 140),
 					ratio
-				) * (0.15f + ratio * 0.15f);
-
-				Rectangle bellyRect = new Rectangle(
-					(int)(bellyPos.X - bW / 2f),
-					(int)(bellyPos.Y - bH / 2f),
-					(int)bW,
-					(int)bH
 				);
+				float baseAlpha = 0.12f + ratio * 0.18f;
 
-				drawInfo.DrawDataCache.Add(new DrawData(
-					TextureAssets.MagicPixel.Value,
-					bellyRect,
-					new Rectangle(0, 0, 1, 1),
-					bellyColor,
-					0f,
-					Vector2.Zero,
-					SpriteEffects.None,
-					0
-				));
+				// Рисуем эллипс горизонтальными полосками
+				for (int row = 0; row < strips; row++)
+				{
+					// t от -1 до +1 (верх к низу)
+					float t = (row / (float)(strips - 1)) * 2f - 1f;
+
+					// Ширина полоски по формуле эллипса: w = halfW * sqrt(1 - t^2)
+					float stripHalfW = halfW * (float)Math.Sqrt(1f - t * t);
+					if (stripHalfW < 0.5f) continue;
+
+					float yPos = bellyCenter.Y + t * halfH;
+					float stripH = Math.Max(1f, (halfH * 2f) / strips + 0.5f);
+
+					// Градиент: верхняя часть светлее (блик), нижняя темнее (тень)
+					float shade = 1f - t * 0.15f; // Верх чуть ярче
+					// Боковое затемнение ближе к краям
+					float edgeDarken = 0.85f + 0.15f * (1f - Math.Abs(t));
+
+					Color stripColor = new Color(
+						(int)(baseColor.R * shade * edgeDarken),
+						(int)(baseColor.G * shade * edgeDarken),
+						(int)(baseColor.B * shade * edgeDarken)
+					) * baseAlpha;
+
+					Rectangle stripRect = new Rectangle(
+						(int)(bellyCenter.X - stripHalfW),
+						(int)yPos,
+						(int)(stripHalfW * 2f),
+						(int)stripH
+					);
+
+					drawInfo.DrawDataCache.Add(new DrawData(
+						TextureAssets.MagicPixel.Value,
+						stripRect,
+						new Rectangle(0, 0, 1, 1),
+						stripColor,
+						0f,
+						Vector2.Zero,
+						SpriteEffects.None,
+						0
+					));
+				}
+
+				// Блик по центру живота (маленький светлый овал)
+				if (ratio > 0.4f)
+				{
+					float highlightW = halfW * 0.4f;
+					float highlightH = halfH * 0.3f;
+					Color highlightColor = Color.White * (0.04f + ratio * 0.06f);
+					
+					Rectangle highlightRect = new Rectangle(
+						(int)(bellyCenter.X - highlightW / 2f - 1f),
+						(int)(bellyCenter.Y - highlightH - halfH * 0.1f),
+						(int)highlightW,
+						(int)highlightH
+					);
+					
+					drawInfo.DrawDataCache.Add(new DrawData(
+						TextureAssets.MagicPixel.Value,
+						highlightRect,
+						new Rectangle(0, 0, 1, 1),
+						highlightColor,
+						0f,
+						Vector2.Zero,
+						SpriteEffects.None,
+						0
+					));
+				}
 			}
 		}
 	}

@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -56,8 +57,44 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 			}
 		}
 
+		private float previousVelocityY;
+		private bool isFalling;
+		private int customFallStartY; // Наша собственная точка начала падения (в тайлах)
+
+		public override void PreUpdate()
+		{
+			previousVelocityY = Player.velocity.Y;
+		}
+
 		public override void PostUpdate()
 		{
+			// Отслеживаем начало падения вручную (Terraria сбрасывает fallStart когда noFallDmg = true)
+			if (FatStage == 4)
+			{
+				if (Player.velocity.Y > 0f && !isFalling)
+				{
+					// Игрок начал падать — запоминаем начальную точку
+					isFalling = true;
+					customFallStartY = (int)(Player.position.Y / 16f);
+				}
+				else if (Player.velocity.Y == 0f && isFalling)
+				{
+					// Игрок приземлился
+					int currentTileY = (int)(Player.position.Y / 16f);
+					int fallDist = currentTileY - customFallStartY;
+					isFalling = false;
+
+					if (fallDist >= 34)
+					{
+						BreakBlocksUnderneath();
+					}
+				}
+				else if (Player.velocity.Y <= 0f)
+				{
+					isFalling = false;
+				}
+			}
+
 			if (FatLevel <= 0) return;
 
 			float burnRate = 0f;
@@ -113,6 +150,42 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 			}
 		}
 
+		private void BreakBlocksUnderneath()
+		{
+			int playerTileX = (int)(Player.Center.X / 16f);
+			int playerTileY = (int)((Player.position.Y + Player.height + 2f) / 16f); // Плитка прямо под ногами
+			int depth = Main.rand.Next(2, 4); // 2 или 3 блока в глубину
+			bool playedSound = false;
+
+			for (int x = playerTileX - 1; x <= playerTileX + 1; x++)
+			{
+				for (int y = playerTileY; y < playerTileY + depth; y++)
+				{
+					Tile tile = Main.tile[x, y];
+					// Проверяем, что есть блок и он твердый
+					if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType])
+					{
+						// Уничтожаем блок
+						WorldGen.KillTile(x, y, fail: false, effectOnly: false, noItem: false);
+						if (!tile.HasTile)
+						{
+							playedSound = true;
+						}
+					}
+				}
+			}
+
+			if (playedSound)
+			{
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item14, Player.Center);
+				for (int i = 0; i < 20; i++)
+				{
+					int d = Dust.NewDust(Player.position, Player.width, Player.height, DustID.Smoke, 0f, 0f, 100, default, 2f);
+					Main.dust[d].velocity *= 2f;
+				}
+			}
+		}
+
 		private void ApplyFatEffects()
 		{
 			if (FatLevel <= 0) return;
@@ -131,6 +204,11 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 
 			if (FatLevel >= 90f)
 				Player.lifeRegen = Math.Max(0, Player.lifeRegen - 4);
+
+			if (FatStage == 4)
+			{
+				Player.noFallDmg = true; // Отключаем урон от падения
+			}
 		}
 
 		public override void SaveData(TagCompound tag)

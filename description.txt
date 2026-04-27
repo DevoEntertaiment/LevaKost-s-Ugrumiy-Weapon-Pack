@@ -1,1 +1,11 @@
-A content mod adding unique weapons, NPCs, accessories, and consumables with humorous flair. Features slime guns, a fat system, a cursed AI bracelet, and more!
+LevaKost's Ugrumiy Weapon Pack v{ModVersion}
+
+A content mod for Terraria / tModLoader by LelaPo & Kotya.
+
+Adds unique weapons (Slime Minigun, Slime Shotgun, IBP-3000, VXE R1 SE+),
+Town NPCs (Cow, Mechanic-Merriweather), a rare cavern dweller (John),
+accessories (John's Hat, Cursed Bandle), and consumables (Fat Burger system,
+Cherry, Cow Milk, Spooky Candy, Cow Bell). Supports English and Russian.
+
+Built for tModLoader v{tMLVersion} ({tMLBuildPurpose}).
+Source / issues: {ModHomepage}

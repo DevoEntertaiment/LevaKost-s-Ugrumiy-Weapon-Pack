@@ -21,10 +21,19 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - name: Cache tModLoader
+        id: cache-tml
+        uses: actions/cache@v4
+        with:
+          path: tModLoader.zip
+          key: tmodloader-latest-${{ runner.os }}
+
       - name: Download tModLoader
-        run: |
-          curl -sL "https://github.com/tModLoader/tModLoader/releases/latest/download/tModLoader.zip" -o /tmp/tModLoader.zip
-          unzip -qo /tmp/tModLoader.zip -d "$GITHUB_WORKSPACE"
+        if: steps.cache-tml.outputs.cache-hit != 'true'
+        run: curl -sL "https://github.com/tModLoader/tModLoader/releases/latest/download/tModLoader.zip" -o tModLoader.zip
+
+      - name: Extract tModLoader
+        run: unzip -qo tModLoader.zip -d "$GITHUB_WORKSPACE"
 
       - name: Setup tModLoader.targets
         run: cp "$GITHUB_WORKSPACE/tMLMod.targets" "$GITHUB_WORKSPACE/tModLoader.targets"

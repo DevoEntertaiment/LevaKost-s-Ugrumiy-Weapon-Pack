@@ -1,12 +1,15 @@
 name: Release Mod
 
 on:
+  push:
+    tags:
+      - 'v*.*.*'
   workflow_dispatch:
     inputs:
       version:
-        description: "Версия релиза (например 0.1.1)"
+        description: "Версия релиза (например 0.1.2). Будет создан тег v<version>."
         required: true
-        default: "0.1.1"
+        default: "0.1.2"
 
 permissions:
   contents: write
@@ -16,26 +19,104 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout mod source
+      - name: Resolve version
+        id: ver
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ github.event.inputs.version }}"
+            VERSION="${VERSION#v}"
+            TAG="v${VERSION}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+            VERSION="${TAG#v}"
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "Resolved version=${VERSION}, tag=${TAG}"
+
+      - name: Checkout mod source (main)
         uses: actions/checkout@v4
         with:
+          ref: main
+          fetch-depth: 0
           path: LK_Ugrumiy_WP
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump version in build.txt and README.md
+        working-directory: LK_Ugrumiy_WP
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          set -eu
+          echo "Bumping to ${VERSION}"
+          # build.txt: version = X.Y.Z
+          sed -i -E "s/^version\s*=.*/version = ${VERSION}/" build.txt
+          # README.md: <!-- VERSION -->X.Y.Z<!-- /VERSION -->
+          sed -i -E "s|<!-- VERSION -->[^<]*<!-- /VERSION -->|<!-- VERSION -->${VERSION}<!-- /VERSION -->|g" README.md
+          echo "--- build.txt ---"
+          cat build.txt
+          echo "--- README version line ---"
+          grep -n 'VERSION -->' README.md || true
+
+      - name: Commit version bump back to main
+        id: commit
+        if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag'
+        working-directory: LK_Ugrumiy_WP
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+          TAG: ${{ steps.ver.outputs.tag }}
+        run: |
+          set -eu
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- build.txt README.md; then
+            echo "Nothing to commit (version already up to date)."
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+          else
+            git add build.txt README.md
+            git commit -m "chore(release): bump version to ${VERSION}"
+            git push origin HEAD:main
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Re-tag at version-bump commit (workflow_dispatch only)
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: LK_Ugrumiy_WP
+        env:
+          TAG: ${{ steps.ver.outputs.tag }}
+        run: |
+          set -eu
+          if git rev-parse "${TAG}" >/dev/null 2>&1; then
+            git tag -d "${TAG}"
+            git push origin ":refs/tags/${TAG}" || true
+          fi
+          git tag "${TAG}"
+          git push origin "${TAG}"
 
       - name: Setup .NET 8.0
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
+      - name: Cache tModLoader
+        id: cache-tml
+        uses: actions/cache@v4
+        with:
+          path: tModLoader.zip
+          key: tmodloader-latest-${{ runner.os }}
+
       - name: Download tModLoader
-        run: |
-          curl -sL "https://github.com/tModLoader/tModLoader/releases/latest/download/tModLoader.zip" -o /tmp/tModLoader.zip
-          unzip -qo /tmp/tModLoader.zip -d "$GITHUB_WORKSPACE"
+        if: steps.cache-tml.outputs.cache-hit != 'true'
+        run: curl -sL "https://github.com/tModLoader/tModLoader/releases/latest/download/tModLoader.zip" -o tModLoader.zip
+
+      - name: Extract tModLoader
+        run: unzip -qo tModLoader.zip -d "$GITHUB_WORKSPACE"
 
       - name: Setup tModLoader.targets
         run: cp "$GITHUB_WORKSPACE/tMLMod.targets" "$GITHUB_WORKSPACE/tModLoader.targets"
 
       - name: Build mod
-        run: dotnet build
+        run: dotnet build -c Release
         working-directory: LK_Ugrumiy_WP
         env:
           LD_LIBRARY_PATH: ${{ github.workspace }}/Libraries/Native/Linux
@@ -43,25 +124,43 @@ jobs:
       - name: Find .tmod file
         id: find_tmod
         run: |
-          TMOD_PATH=$(find ~/.local/share/Terraria/tModLoader/Mods -name "*.tmod" | head -1)
-          echo "tmod_path=$TMOD_PATH" >> "$GITHUB_OUTPUT"
-          TMOD_NAME=$(basename "$TMOD_PATH")
-          echo "tmod_name=$TMOD_NAME" >> "$GITHUB_OUTPUT"
-          echo "Found: $TMOD_PATH"
+          set -eu
+          TMOD_PATH=$(find "$HOME/.local/share/Terraria/tModLoader/Mods" -name "*.tmod" | head -1)
+          if [[ -z "${TMOD_PATH}" ]]; then
+            echo "No .tmod file produced!" >&2
+            exit 1
+          fi
+          TMOD_NAME=$(basename "${TMOD_PATH}")
+          VERSIONED_NAME="${TMOD_NAME%.tmod}-v${{ steps.ver.outputs.version }}.tmod"
+          cp "${TMOD_PATH}" "${VERSIONED_NAME}"
+          echo "tmod_path=${TMOD_PATH}" >> "$GITHUB_OUTPUT"
+          echo "tmod_name=${TMOD_NAME}" >> "$GITHUB_OUTPUT"
+          echo "versioned_path=${VERSIONED_NAME}" >> "$GITHUB_OUTPUT"
+          echo "Found: ${TMOD_PATH}"
+          echo "Versioned copy: ${VERSIONED_NAME}"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.event.inputs.version }}
-          name: v${{ github.event.inputs.version }}
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: ${{ steps.ver.outputs.tag }}
+          generate_release_notes: true
           body: |
-            ## LevaKost's Ugrumiy Weapon Pack v${{ github.event.inputs.version }}
+            ## LevaKost's Ugrumiy Weapon Pack ${{ steps.ver.outputs.tag }}
+
+            Собрано автоматически из ветки `main` (коммит `${{ github.sha }}`).
 
             ### Установка
-            1. Скачайте `.tmod` файл из Assets ниже
-            2. Поместите его в папку `Documents/My Games/Terraria/tModLoader/Mods/`
-            3. Включите мод в tModLoader и перезагрузите
+            1. Скачайте `.tmod` файл из *Assets* ниже.
+            2. Положите его в:
+               - **Windows:** `%UserProfile%\Documents\My Games\Terraria\tModLoader\Mods\`
+               - **Linux:** `~/.local/share/Terraria/tModLoader/Mods/`
+               - **macOS:** `~/Library/Application Support/Terraria/tModLoader/Mods/`
+            3. Включите мод в tModLoader и перезагрузите.
 
-            Собрано автоматически из ветки `main` (коммит ${{ github.sha }}).
-          files: ${{ steps.find_tmod.outputs.tmod_path }}
+            ### Что нового
+            См. список изменений ниже (генерируется GitHub автоматически).
+          files: |
+            ${{ steps.find_tmod.outputs.tmod_path }}
+            ${{ steps.find_tmod.outputs.versioned_path }}
           fail_on_unmatched_files: true

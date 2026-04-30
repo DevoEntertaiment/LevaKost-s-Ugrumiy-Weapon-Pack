@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace LK_Ugrumiy_WP.Content.Accessories
+namespace LK_Ugrumiy_WP.Content.Items.Accessories.CursedBandle
 {
 	/// <summary>
 	/// Q-Learning: настоящий ИИ с обучением с подкреплением.

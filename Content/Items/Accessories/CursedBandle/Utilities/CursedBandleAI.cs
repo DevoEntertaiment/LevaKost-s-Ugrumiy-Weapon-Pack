@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LK_Ugrumiy_WP.Content.Accessories
+namespace LK_Ugrumiy_WP.Content.Items.Accessories.CursedBandle
 {
 	/// <summary>
 	/// ИИ с реальным Q-Learning обучением.

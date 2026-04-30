@@ -14,8 +14,8 @@
   </p>
 </div>
 
-> **Версия:** <!-- VERSION -->0.1.4<!-- /VERSION -->
 > **Авторы:** LelaPo & Kotya
+> **Актуальная версия:** см. [последний релиз](https://github.com/LevaKost/Ugrumiy-Weapon-Pack/releases/latest) (бейдж `Latest release` выше)
 
 Мод добавляет оружие, NPC, аксессуары и расходники с фирменным юмором и
 механиками, которых нет в ваниле: слизневые ружья, систему ожирения,
@@ -198,8 +198,9 @@ git push origin v0.1.2
 
 GitHub Actions ([release.yml](.github/workflows/release.yml)) автоматически:
 
-1. Подставит новую версию в `build.txt` (`version = …`) и в маркер
-   `<!-- VERSION -->0.1.4<!-- /VERSION -->` в этом README, закоммитит изменения в `main`.
+1. Подставит указанную версию в `build.txt` **только в рабочей копии раннера**
+   (репо при этом не меняется — никаких авто-коммитов в `main` и нужды делать
+   `git pull` после релиза).
 2. Соберёт мод в .NET 8 + tModLoader и найдёт `.tmod`.
 3. Создаст GitHub Release с авто-сгенерированными release notes
    (`generate_release_notes: true`) и приложит `.tmod` как ассет.

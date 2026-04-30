@@ -40,58 +40,20 @@ jobs:
           ref: main
           fetch-depth: 0
           path: LK_Ugrumiy_WP
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Bump version in build.txt and README.md
+      # Версия выставляется в build.txt только для этой сборки — изменения
+      # НЕ коммитятся обратно в репо, чтобы релиз не создавал шум в истории
+      # main и не требовал git pull от разработчиков. README не трогаем вовсе.
+      - name: Set build.txt version (release-only, not committed)
         working-directory: LK_Ugrumiy_WP
         env:
           VERSION: ${{ steps.ver.outputs.version }}
         run: |
           set -eu
-          echo "Bumping to ${VERSION}"
-          # build.txt: version = X.Y.Z
+          echo "Building with version ${VERSION} (workspace-only edit)"
           sed -i -E "s/^version\s*=.*/version = ${VERSION}/" build.txt
-          # README.md: <!-- VERSION -->X.Y.Z<!-- /VERSION -->
-          sed -i -E "s|<!-- VERSION -->[^<]*<!-- /VERSION -->|<!-- VERSION -->${VERSION}<!-- /VERSION -->|g" README.md
           echo "--- build.txt ---"
           cat build.txt
-          echo "--- README version line ---"
-          grep -n 'VERSION -->' README.md || true
-
-      - name: Commit version bump back to main
-        id: commit
-        if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag'
-        working-directory: LK_Ugrumiy_WP
-        env:
-          VERSION: ${{ steps.ver.outputs.version }}
-          TAG: ${{ steps.ver.outputs.tag }}
-        run: |
-          set -eu
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- build.txt README.md; then
-            echo "Nothing to commit (version already up to date)."
-            echo "committed=false" >> "$GITHUB_OUTPUT"
-          else
-            git add build.txt README.md
-            git commit -m "chore(release): bump version to ${VERSION}"
-            git push origin HEAD:main
-            echo "committed=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Re-tag at version-bump commit (workflow_dispatch only)
-        if: github.event_name == 'workflow_dispatch'
-        working-directory: LK_Ugrumiy_WP
-        env:
-          TAG: ${{ steps.ver.outputs.tag }}
-        run: |
-          set -eu
-          if git rev-parse "${TAG}" >/dev/null 2>&1; then
-            git tag -d "${TAG}"
-            git push origin ":refs/tags/${TAG}" || true
-          fi
-          git tag "${TAG}"
-          git push origin "${TAG}"
 
       - name: Setup .NET 8.0
         uses: actions/setup-dotnet@v4

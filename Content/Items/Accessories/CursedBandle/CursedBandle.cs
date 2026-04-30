@@ -2,11 +2,11 @@
 using Terraria.ModLoader;
 using Terraria.ID;
 
-namespace LK_Ugrumiy_WP.Content.Accessories
+namespace LK_Ugrumiy_WP.Content.Items.Accessories.CursedBandle
 {
 	public class CursedBandle : ModItem
 	{
-		public override string Texture => "LK_Ugrumiy_WP/Content/Accessories/CursedBandle/CursedBandle";
+		public override string Texture => "LK_Ugrumiy_WP/Content/Items/Accessories/CursedBandle/CursedBandle";
 
 		public override void SetDefaults()
 		{

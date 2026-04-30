@@ -1,13 +1,13 @@
 using Terraria;
 using Terraria.ModLoader;
-using LK_Ugrumiy_WP.Content.Mounts;
+using LK_Ugrumiy_WP.Content.Mounts.OppressorMK2;
 
 namespace LK_Ugrumiy_WP.Content.Buffs
 {
     public class OppressorMK2Buff : ModBuff
     {
         // Временно используем текстуру маунта как иконку баффа, так как файл OppressorMK2Buff.png отсутствует
-        public override string Texture => "LK_Ugrumiy_WP/Content/Mounts/OppressorMK2";
+        public override string Texture => "LK_Ugrumiy_WP/Content/Mounts/OppressorMK2/OppressorMK2";
         public override void SetStaticDefaults()
         {
             Main.buffNoTimeDisplay[Type] = true;

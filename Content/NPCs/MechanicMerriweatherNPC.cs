@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using LK_Ugrumiy_WP.Content.Items;
+using LK_Ugrumiy_WP.Content.Mounts.OppressorMK2;
 using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.Personalities;

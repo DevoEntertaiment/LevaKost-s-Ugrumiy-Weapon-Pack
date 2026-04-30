@@ -106,7 +106,8 @@ namespace LK_Ugrumiy_WP.Content.Projectiles
             for (int i = 0; i < Main.maxNPCs; i++)
             {
                 NPC npc = Main.npc[i];
-                if (npc.active && !npc.boss && npc.type != NPCID.TargetDummy) 
+                // Хватаем любых живых NPC (теперь включая боссов!), кроме манекенов
+                if (npc.active && npc.type != NPCID.TargetDummy) 
                 {
                     float dist = Vector2.Distance(targetPos, npc.Center);
                     if (dist < closestDist)
@@ -129,23 +130,22 @@ namespace LK_Ugrumiy_WP.Content.Projectiles
                 return;
             }
 
-            // 3. Если нет предметов и мобов, пробуем поднять поставленный предмет (мебель, верстак, сундук)
+            // 3. Если нет предметов и мобов, пробуем поднять любой блок или объект (земля, камень, мебель)
             int tileX = (int)(targetPos.X / 16f);
             int tileY = (int)(targetPos.Y / 16f);
             if (WorldGen.InWorld(tileX, tileY))
             {
                 Tile tile = Main.tile[tileX, tileY];
-                // Main.tileFrameImportant означает, что это мебель/проп, а не просто кусок грязи или камня
-                if (tile.HasTile && Main.tileFrameImportant[tile.TileType])
+                // Проверяем только наличие тайла (убрали проверку на мебель)
+                if (tile.HasTile)
                 {
-                    // Пытаемся сломать мебель (если это сундук с вещами, Террария его не сломает - защита от потери вещей)
+                    // Пытаемся сломать блок или мебель. 
                     WorldGen.KillTile(tileX, tileY, fail: false, effectOnly: false, noItem: false);
                     if (Main.netMode == NetmodeID.MultiplayerClient)
                     {
                         NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, tileX, tileY);
                     }
-                    // Если мебель сломалась, из неё выпадет предмет (Item).
-                    // На следующем кадре (Tick) гравипушка найдет этот выброшенный предмет в цикле выше и захватит его!
+                    // Если блок сломался, из него выпадет предмет. На следующем кадре мы его захватим.
                 }
             }
         }
@@ -212,6 +212,15 @@ namespace LK_Ugrumiy_WP.Content.Projectiles
                 {
                     // Бросаем моба
                     npc.velocity = throwVelocity;
+
+                    // Устанавливаем флаг броска для нанесения урона при столкновении
+                    if (npc.TryGetGlobalNPC(out NPCs.GravityGunGlobalNPC gNpc))
+                    {
+                        gNpc.thrownByGravityGun = true;
+                        gNpc.throwTimer = 180; // 3 секунды на то, чтобы врезаться
+                        gNpc.lastVelocityLength = throwVelocity.Length();
+                    }
+
                     ReleaseEntity();
                     Projectile.Kill();
                     return;

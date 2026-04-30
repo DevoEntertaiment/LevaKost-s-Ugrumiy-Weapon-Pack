@@ -2,20 +2,20 @@ SPRITES TO CREATE / ЗАМЕНИТЬ
 =============================
 
 1. JohnsHat.png
-   Location: Content/Items/Accessories/JohnsHat.png
+   Location: Content/Items/Accessories/JohnsHat/JohnsHat.png
    Size: 30x30 pixels (standard accessory size)
    Description: A worn-out cap/hat. Reference: Grizzled Jon's hat from RDR2.
    Colors: Brown/gray tones, weathered look.
 
 2. JohnNPC.png
-   Location: Content/NPCs/JohnNPC.png
+   Location: Content/NPCs/JohnNPC/JohnNPC.png
    Size: 18x40 pixels (standard town NPC size)
    Frame count: 25 frames (same as Guide NPC)
    Description: An old man NPC wearing a distinctive hat.
    Reference: Old, grizzled man similar to Grizzled Jon from RDR2.
 
 3. GravityGun.png  [PLACEHOLDER]
-   Location: Content/Items/Weapons/GravityGun.png
+   Location: Content/Items/Weapons/GravityGun/GravityGun.png
    Size: 64x28 pixels (matches Item.width=64, Item.height=28).
    Description: Inventory icon AND in-hand sprite of the Gravity Gun.
                 The same texture is also drawn in the player's hand by
@@ -30,7 +30,7 @@ SPRITES TO CREATE / ЗАМЕНИТЬ
            that's the "this is a placeholder" sentinel; remove it in the final art.
 
 4. GravityGunBeam.png  [PLACEHOLDER, currently unused at runtime]
-   Location: Content/Projectiles/GravityGunBeam.png
+   Location: Content/Projectiles/GravityGunBeam/GravityGunBeam.png
    Size: 16x16 pixels.
    Description: Single beam particle. The runtime currently draws the beam
                 with vanilla DustID.Flare in DrawBeam(), so this PNG is only

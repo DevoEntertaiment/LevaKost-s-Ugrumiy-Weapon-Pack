@@ -12,7 +12,7 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 	public class CowMilk : ModItem
 	{
 		// Собственный спрайт молока
-		public override string Texture => "LK_Ugrumiy_WP/Content/Items/Consumables/CowMilk";
+		public override string Texture => "LK_Ugrumiy_WP/Content/Items/Consumables/CowMilk/CowMilk";
 
 		public override void SetDefaults()
 		{

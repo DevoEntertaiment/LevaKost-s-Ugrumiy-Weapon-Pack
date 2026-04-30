@@ -21,6 +21,8 @@ namespace LK_Ugrumiy_WP.Content.Projectiles
     /// </summary>
     public class VxeMouseProjectile : ModProjectile
     {
+        public override string Texture => "LK_Ugrumiy_WP/Content/Projectiles/VxeMouseProjectile/VxeMouseProjectile";
+
         // Movement tuning.
         private const float SpringStrength = 0.9f;
         private const float Damping = 0.94f;

@@ -11,8 +11,8 @@ namespace LK_Ugrumiy_WP.Content.Items.Accessories
     /// </summary>
     public class JohnsHat : ModItem
     {
-        // Placeholder sprite: заменить на свой спрайт в Content/Items/Accessories/JohnsHat.png
-        public override string Texture => "LK_Ugrumiy_WP/Content/Items/Accessories/JohnsHat";
+        // Placeholder sprite: заменить на свой спрайт в Content/Items/Accessories/JohnsHat/JohnsHat.png
+        public override string Texture => "LK_Ugrumiy_WP/Content/Items/Accessories/JohnsHat/JohnsHat";
 
         public override void SetDefaults()
         {

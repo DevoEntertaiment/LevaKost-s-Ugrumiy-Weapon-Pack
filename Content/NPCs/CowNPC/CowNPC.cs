@@ -17,7 +17,7 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 	public class CowNPC : ModNPC
 	{
 		// Собственный спрайтшит коровы (25 фреймов)
-		public override string Texture => "LK_Ugrumiy_WP/Content/NPCs/CowNPC";
+		public override string Texture => "LK_Ugrumiy_WP/Content/NPCs/CowNPC/CowNPC";
 
 		public override LocalizedText DisplayName => Language.GetOrRegister(
 			"Mods.LK_Ugrumiy_WP.NPCs.CowNPC.DisplayName",

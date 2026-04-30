@@ -20,7 +20,7 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 	{
 		public const string ShopName = "Shop";
 
-		public override string Texture => "LK_Ugrumiy_WP/Content/NPCs/MechanicMerriweatherNPC";
+		public override string Texture => "LK_Ugrumiy_WP/Content/NPCs/MechanicMerriweatherNPC/MechanicMerriweatherNPC";
 
 		public override LocalizedText DisplayName => Language.GetOrRegister(
 			"Mods.LK_Ugrumiy_WP.NPCs.MechanicMerriweatherNPC.DisplayName",

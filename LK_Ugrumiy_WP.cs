@@ -27,10 +27,33 @@ namespace LK_Ugrumiy_WP
 
 		private void HandleOppressorBoostSync(BinaryReader reader, int whoAmI)
 		{
-			byte playerId = reader.ReadByte();
-			sbyte direction = reader.ReadSByte();
+			// Wire-формат:
+			//   client -> server: [direction(sbyte)]                    (playerId не доверяем)
+			//   server -> client: [playerId(byte)][direction(sbyte)]    (playerId выставляет сервер)
+			byte playerId;
+			sbyte direction;
 
-			// На сервере — пересылаем всем кроме отправителя.
+			if (Main.netMode == NetmodeID.Server)
+			{
+				// Сервер игнорирует playerId из тела пакета — пишет реального отправителя whoAmI.
+				// Иначе клиент мог бы заспуфить чужой ID и заставить сервер бродкастить
+				// эффекты буста (звук + 45 пылинок) у произвольного игрока.
+				direction = reader.ReadSByte();
+				playerId = (byte)whoAmI;
+			}
+			else
+			{
+				playerId = reader.ReadByte();
+				direction = reader.ReadSByte();
+			}
+
+			// Валидация направления: только ±1, иначе TriggerBoost будет no-op,
+			// а сервер всё равно успеет бродкастить пакет — это просто шум на проводе.
+			if (direction != 1 && direction != -1)
+			{
+				return;
+			}
+
 			if (Main.netMode == NetmodeID.Server)
 			{
 				ModPacket relay = GetPacket();
@@ -41,14 +64,26 @@ namespace LK_Ugrumiy_WP
 				return;
 			}
 
-			// На клиенте — применяем эффекты буста на удалённого игрока.
+			// На клиенте — применяем эффекты на удалённого игрока.
 			if (playerId == Main.myPlayer)
+			{
+				return;
+			}
+
+			if (playerId >= Main.maxPlayers)
 			{
 				return;
 			}
 
 			Player remote = Main.player[playerId];
 			if (remote == null || !remote.active)
+			{
+				return;
+			}
+
+			// Не верим даже легитимному пакету «вслепую»: применяем эффекты только если
+			// remote-игрок реально на нашем маунте — иначе спуфнуть может сам сервер.
+			if (!remote.mount.Active || remote.mount.Type != ModContent.MountType<OppressorMK2>())
 			{
 				return;
 			}

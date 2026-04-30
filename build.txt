@@ -1,6 +1,6 @@
 displayName = LevaKost's Ugrumiy Weapon Pack
 author = LelaPo & Kotya
-version = 0.1.3
+version = 0.1.4
 homepage = https://github.com/LevaKost/Ugrumiy-Weapon-Pack
 hideCode = false
 hideResources = false

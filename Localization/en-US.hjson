@@ -208,6 +208,11 @@ Mods: {
 					'Manufactured in a place that doesn't exist, by a company that denies its existence'
 					'''
 			}
+
+			GravityGun: {
+				Tooltip: ""
+				DisplayName: Gravity Gun
+			}
 		}
 
 		Buffs: {
@@ -285,6 +290,7 @@ Mods: {
 			SlimeGlob.DisplayName: Slime Glob
 			SlimePuddle.DisplayName: Slime Puddle
 			VxeMouseProjectile.DisplayName: Vxe Mouse Projectile
+			GravityGunBeam.DisplayName: Gravity Gun Beam
 		}
 	}
 }

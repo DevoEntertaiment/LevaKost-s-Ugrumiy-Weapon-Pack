@@ -208,6 +208,11 @@ Mods: {
 					'Произведено в месте, которого нет, компанией, которая отрицает своё существование'
 					'''
 			}
+
+			GravityGun: {
+				// Tooltip: ""
+				// DisplayName: Gravity Gun
+			}
 		}
 
 		Buffs: {
@@ -285,6 +290,7 @@ Mods: {
 			SlimeGlob.DisplayName: Слизневый сгусток
 			SlimePuddle.DisplayName: Слизневая лужа
 			// VxeMouseProjectile.DisplayName: Vxe Mouse Projectile
+			// GravityGunBeam.DisplayName: Gravity Gun Beam
 		}
 	}
 }

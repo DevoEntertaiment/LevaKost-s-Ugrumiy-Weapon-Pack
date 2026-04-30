@@ -1,9 +1,9 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using LK_Ugrumiy_WP.Content.Mounts;
 
-namespace LK_Ugrumiy_WP.Content.Items
+
+namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
 {
     public class OppressorMK2Item : ModItem
     {

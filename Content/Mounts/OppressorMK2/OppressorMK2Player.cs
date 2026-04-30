@@ -1,7 +1,7 @@
 using Terraria;
 using Terraria.ModLoader;
 
-namespace LK_Ugrumiy_WP.Content.Mounts
+namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
 {
     public class OppressorMK2Player : ModPlayer
     {

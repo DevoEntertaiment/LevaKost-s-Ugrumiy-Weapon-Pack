@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework;
 
-namespace LK_Ugrumiy_WP.Content.Accessories
+namespace LK_Ugrumiy_WP.Content.Items.Accessories.CursedBandle
 {
 	public class CursedBandlePlayer : ModPlayer
 	{

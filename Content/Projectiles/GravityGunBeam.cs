@@ -263,35 +263,45 @@ namespace LK_Ugrumiy_WP.Content.Projectiles
             }
         }
 
+        // Координаты центра рукоятки внутри текстуры GravityGun.png (64x28).
+        // Эта точка должна оказаться в руке игрока — относительно неё пушка вращается.
+        private static readonly Vector2 GripOriginInTexture = new Vector2(13f, 23f);
+
         public override bool PreDraw(ref Color lightColor)
         {
             Player player = Main.player[Projectile.owner];
 
-            // Рисуем спрайт самой пушки в руке игрока
             Texture2D texture = TextureAssets.Item[ModContent.ItemType<Items.Weapons.GravityGun>()].Value;
 
-            // Центр игрока (рука)
-            Vector2 drawPos = player.MountedCenter - Main.screenPosition;
+            // Якорь отрисовки = реальная позиция руки игрока, а не центр туловища.
+            // Небольшой сдвиг вперёд (по facing) и вниз от MountedCenter примерно
+            // совпадает с тем местом, где ваниль рисует руку при ItemUseStyleID.Shoot.
+            Vector2 handOffset = new Vector2(player.direction * 2f, 2f);
+            Vector2 drawPos = player.MountedCenter + handOffset - Main.screenPosition;
 
-            Vector2 origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
+            // player.itemRotation выставляется в AI() в «player-local» координатах
+            // (всегда вблизи 0, потому что dirToMouse * player.direction всегда смотрит
+            // вперёд по facing). Поэтому при взгляде влево добавляем Pi для мирового угла.
+            float rotation = player.itemRotation;
+            SpriteEffects effects = SpriteEffects.None;
+            if (player.direction == -1)
+            {
+                rotation += MathHelper.Pi;
+                effects = SpriteEffects.FlipVertically;
+            }
 
-            // Целимся туда, куда смотрит рука игрока (см. AI: itemRotation выставляется по targetPos)
-            Vector2 dirToMouse = new Vector2(
-                (float)Math.Cos(player.itemRotation) * player.direction,
-                (float)Math.Sin(player.itemRotation) * player.direction);
-            if (dirToMouse.LengthSquared() < 0.0001f)
-                dirToMouse = Vector2.UnitX * player.direction;
-            float rotation = dirToMouse.ToRotation();
+            Main.EntitySpriteDraw(
+                texture,
+                drawPos,
+                null,
+                lightColor,
+                rotation,
+                GripOriginInTexture,
+                player.GetAdjustedItemScale(player.HeldItem),
+                effects,
+                0);
 
-            // Спрайт нарисован «горизонтально» (барабан вправо), поэтому при взгляде
-            // влево отзеркаливаем по вертикали, чтобы рукоять оставалась внизу.
-            SpriteEffects effects = player.direction == 1
-                ? SpriteEffects.None
-                : SpriteEffects.FlipVertically;
-
-            Main.EntitySpriteDraw(texture, drawPos, null, lightColor, rotation, origin, player.GetAdjustedItemScale(player.HeldItem), effects, 0);
-
-            return false; // Мы не рисуем сам снаряд, только частицы в DrawBeam
+            return false; // Сам снаряд невидим — DrawBeam уже рисует луч пылью.
         }
     }
 }

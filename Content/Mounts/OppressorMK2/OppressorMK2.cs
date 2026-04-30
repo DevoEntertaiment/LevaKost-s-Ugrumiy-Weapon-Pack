@@ -7,7 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using LK_Ugrumiy_WP.Content.Buffs;
 
-namespace LK_Ugrumiy_WP.Content.Mounts
+namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
 {
     public class OppressorMK2 : ModMount
     {
@@ -140,7 +140,7 @@ namespace LK_Ugrumiy_WP.Content.Mounts
                 // drawType == 0 — это backTexture маунта
                 if (drawType == 0)
                 {
-                    texture = ModContent.Request<Microsoft.Xna.Framework.Graphics.Texture2D>("LK_Ugrumiy_WP/Content/Mounts/OppressorMK2Boost_Back").Value;
+                    texture = ModContent.Request<Microsoft.Xna.Framework.Graphics.Texture2D>("LK_Ugrumiy_WP/Content/Mounts/OppressorMK2/OppressorMK2Boost_Back").Value;
                 }
             }
 

@@ -100,7 +100,7 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 					
 					Texture2D boostTex = null;
 					try {
-						boostTex = ModContent.Request<Texture2D>("LK_Ugrumiy_WP/Content/Mounts/OppressorMK2Boost_Back").Value;
+						boostTex = ModContent.Request<Texture2D>("LK_Ugrumiy_WP/Content/Mounts/OppressorMK2/OppressorMK2Boost_Back").Value;
 					} catch {}
 
 					if (data.texture != null && boostTex != null && data.texture == boostTex)

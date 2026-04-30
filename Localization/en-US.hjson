@@ -203,7 +203,7 @@ Mods: {
 					'''
 					Summons the Oppressor MK2 — a sleek, definitely-not-stolen flying machine
 					Infinite flight and immunity to fall damage
-					Double-tap left or right to dash forward (5s cooldown)
+					Press [E] (rebindable) or double-tap left/right to boost forward (5s cooldown)
 					A cooldown bar appears under your character while mounted
 					'Manufactured in a place that doesn't exist, by a company that denies its existence'
 					'''
@@ -297,6 +297,10 @@ Mods: {
 			SlimePuddle.DisplayName: Slime Puddle
 			VxeMouseProjectile.DisplayName: Vxe Mouse Projectile
 			GravityGunBeam.DisplayName: Gravity Gun Beam
+		}
+
+		Keybinds: {
+			OppressorMK2Boost.DisplayName: Oppressor MK2 Boost
 		}
 	}
 }

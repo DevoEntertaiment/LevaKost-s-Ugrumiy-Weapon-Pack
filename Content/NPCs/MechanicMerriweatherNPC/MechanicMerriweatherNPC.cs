@@ -160,7 +160,7 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 				.Add(new Item(ItemID.ProjectilePressurePad))
 				.Add(new Item(ItemID.MechanicalLens), Condition.DownedMechBossAny)
 				.Add(new Item(ItemID.LaserRuler), Condition.DownedMechBossAny)
-				// Кастомный товар: летательный аппарат «Угнетатель MK2».
+				// Кастомный товар: летательный аппарат «Опрессор MK2».
 				// Открывается после Плантеры — рядом с другими предметами синей (Cyan) редкости.
 				.Add(new Item(ModContent.ItemType<OppressorMK2Item>()), Condition.DownedPlantera);
 

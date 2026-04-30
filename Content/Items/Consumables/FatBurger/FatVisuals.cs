@@ -20,6 +20,9 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 			var fp = drawInfo.drawPlayer.GetModPlayer<FatPlayer>();
 			if (fp.FatLevel <= 5f) return;
 
+			// Не расширяем модельку, когда игрок на маунте — иначе растягивается спрайт маунта
+			// if (drawInfo.drawPlayer.mount.Active) return; // Убрано, чтобы игрок оставался толстым на маунте
+
 			float ratio = fp.FatLevel / FatPlayer.MaxFat;
 
 			float sx = 1f + ratio * 0.35f;
@@ -42,6 +45,8 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 
 		public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
 		{
+			// Скрываем fat-эффекты на маунте, чтобы не масштабировать спрайт маунта
+			// if (drawInfo.drawPlayer.mount.Active) return false; // Убрано, чтобы эффекты рисовались на маунте
 			return drawInfo.drawPlayer.GetModPlayer<FatPlayer>().FatLevel > 5f;
 		}
 
@@ -58,9 +63,53 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 			Vector2 feetCenter = drawInfo.Position - Main.screenPosition
 				+ new Vector2(drawInfo.drawPlayer.width / 2f, drawInfo.drawPlayer.height);
 
+			bool onMount = drawInfo.drawPlayer.mount.Active;
+			ModMount modMount = onMount ? MountLoader.GetMount(drawInfo.drawPlayer.mount.Type) : null;
+
 			for (int i = 0; i < drawInfo.DrawDataCache.Count; i++)
 			{
 				DrawData data = drawInfo.DrawDataCache[i];
+
+				if (onMount)
+				{
+					bool isMountTexture = false;
+					if (modMount != null)
+					{
+						if (data.texture == modMount.MountData.backTexture?.Value ||
+							data.texture == modMount.MountData.backTextureExtra?.Value ||
+							data.texture == modMount.MountData.backTextureGlow?.Value ||
+							data.texture == modMount.MountData.frontTexture?.Value ||
+							data.texture == modMount.MountData.frontTextureExtra?.Value ||
+							data.texture == modMount.MountData.frontTextureGlow?.Value)
+						{
+							isMountTexture = true;
+						}
+					}
+					else
+					{
+						if (data.texture != null && data.texture.Name != null && data.texture.Name.StartsWith("Images/Mount_"))
+						{
+							isMountTexture = true;
+						}
+					}
+
+					if (data.texture != null && data.texture.Name != null && data.texture.Name.Contains("OppressorMK2"))
+					{
+						isMountTexture = true;
+					}
+					
+					Texture2D boostTex = null;
+					try {
+						boostTex = ModContent.Request<Texture2D>("LK_Ugrumiy_WP/Content/Mounts/OppressorMK2Boost_Back").Value;
+					} catch {}
+
+					if (data.texture != null && boostTex != null && data.texture == boostTex)
+					{
+						isMountTexture = true;
+					}
+
+					if (isMountTexture) continue;
+				}
 
 				Vector2 offset = data.position - feetCenter;
 				offset.X *= sX;

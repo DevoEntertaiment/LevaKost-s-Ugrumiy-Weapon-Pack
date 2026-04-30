@@ -7,6 +7,9 @@ namespace LK_Ugrumiy_WP.Content.Mounts
     {
         // Кастомный таймер для перезарядки рывка Апрессора
         public int customDashDelay = 0;
+        
+        // Таймер активности самого рывка (для анимации и эффектов)
+        public int customDashTimer = 0;
 
         public override void PreUpdateMovement()
         {
@@ -14,6 +17,10 @@ namespace LK_Ugrumiy_WP.Content.Mounts
             if (customDashDelay > 0)
             {
                 customDashDelay--;
+            }
+            if (customDashTimer > 0)
+            {
+                customDashTimer--;
             }
         }
     }

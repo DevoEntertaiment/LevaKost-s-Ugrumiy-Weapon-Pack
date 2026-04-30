@@ -102,34 +102,38 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 			// Базовое сжигание: всегда тикает (очень медленно)
 			burnRate += 0.001f; // ~0.06/сек, ~3.6/мин
 
-			// Бег: быстро сжигает
-			if (Math.Abs(Player.velocity.X) > 2f && Player.velocity.Y == 0f)
+			// На маунте жир не сжигается активно — игрок не бегает сам
+			if (!Player.mount.Active)
 			{
-				burnRate += 0.015f; // ~0.48/сек, ~28.8/мин
-			}
+				// Бег: быстро сжигает
+				if (Math.Abs(Player.velocity.X) > 2f && Player.velocity.Y == 0f)
+				{
+					burnRate += 0.015f; // ~0.48/сек, ~28.8/мин
+				}
 
-			// Спринт (быстрый бег)
-			if (Math.Abs(Player.velocity.X) > 5f)
-			{
-				burnRate += 0.012f; // ещё быстрее
-			}
+				// Спринт (быстрый бег)
+				if (Math.Abs(Player.velocity.X) > 5f)
+				{
+					burnRate += 0.012f; // ещё быстрее
+				}
 
-			// Прыжки
-			if (Player.jump > 0 || Player.velocity.Y < -2f)
-			{
-				burnRate += 0.005f;
-			}
+				// Прыжки
+				if (Player.jump > 0 || Player.velocity.Y < -2f)
+				{
+					burnRate += 0.005f;
+				}
 
-			// Бой (если игрок атакует)
-			if (Player.itemAnimation > 0)
-			{
-				burnRate += 0.004f;
-			}
+				// Бой (если игрок атакует)
+				if (Player.itemAnimation > 0)
+				{
+					burnRate += 0.004f;
+				}
 
-			// Плавание
-			if (Player.wet && !Player.lavaWet)
-			{
-				burnRate += 0.01f;
+				// Плавание
+				if (Player.wet && !Player.lavaWet)
+				{
+					burnRate += 0.01f;
+				}
 			}
 
 			// Накапливаем и применяем

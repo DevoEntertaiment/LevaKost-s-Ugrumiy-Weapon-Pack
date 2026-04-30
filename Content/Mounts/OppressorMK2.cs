@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using LK_Ugrumiy_WP.Content.Buffs;
@@ -110,21 +112,39 @@ namespace LK_Ugrumiy_WP.Content.Mounts
                 if (dashDirection != 0)
                 {
                     // Выполняем рывок
-                    player.velocity.X = 30f * dashDirection; 
+                    player.velocity.X = 45f * dashDirection; 
                     modPlayer.customDashDelay = 300; // Перезарядка (300 тиков = 5 секунд)
+                    modPlayer.customDashTimer = 30; // Время действия рывка (для анимации/эффектов)
                     
                     // Звуковой эффект
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Item82, player.Center); 
                     
                     // Визуальный эффект дыма/пыли
-                    for (int i = 0; i < 30; i++)
+                    for (int i = 0; i < 45; i++)
                     {
-                        int d = Dust.NewDust(player.position, player.width, player.height, DustID.Smoke, 0f, 0f, 100, default, 2f);
-                        Main.dust[d].velocity *= 3f;
+                        int d = Dust.NewDust(player.position, player.width, player.height, DustID.Smoke, 0f, 0f, 100, default, 2.5f);
+                        Main.dust[d].velocity *= 4.5f;
                         Main.dust[d].noGravity = true;
                     }
                 }
             }
+        }
+
+        public override bool Draw(List<Terraria.DataStructures.DrawData> playerDrawData, int drawType, Player drawPlayer, ref Microsoft.Xna.Framework.Graphics.Texture2D texture, ref Microsoft.Xna.Framework.Graphics.Texture2D glowTexture, ref Vector2 drawPosition, ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref Microsoft.Xna.Framework.Graphics.SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
+        {
+            OppressorMK2Player modPlayer = drawPlayer.GetModPlayer<OppressorMK2Player>();
+            
+            // Если игрок в состоянии рывка
+            if (modPlayer.customDashTimer > 0)
+            {
+                // drawType == 0 — это backTexture маунта
+                if (drawType == 0)
+                {
+                    texture = ModContent.Request<Microsoft.Xna.Framework.Graphics.Texture2D>("LK_Ugrumiy_WP/Content/Mounts/OppressorMK2Boost_Back").Value;
+                }
+            }
+
+            return true;
         }
     }
 }

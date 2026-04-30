@@ -14,7 +14,7 @@
   </p>
 </div>
 
-> **Версия:** <!-- VERSION -->0.1.2<!-- /VERSION -->
+> **Версия:** <!-- VERSION -->0.1.3<!-- /VERSION -->
 > **Авторы:** LelaPo & Kotya
 
 Мод добавляет оружие, NPC, аксессуары и расходники с фирменным юмором и
@@ -199,7 +199,7 @@ git push origin v0.1.2
 GitHub Actions ([release.yml](.github/workflows/release.yml)) автоматически:
 
 1. Подставит новую версию в `build.txt` (`version = …`) и в маркер
-   `<!-- VERSION -->0.1.2<!-- /VERSION -->` в этом README, закоммитит изменения в `main`.
+   `<!-- VERSION -->0.1.3<!-- /VERSION -->` в этом README, закоммитит изменения в `main`.
 2. Соберёт мод в .NET 8 + tModLoader и найдёт `.tmod`.
 3. Создаст GitHub Release с авто-сгенерированными release notes
    (`generate_release_notes: true`) и приложит `.tmod` как ассет.

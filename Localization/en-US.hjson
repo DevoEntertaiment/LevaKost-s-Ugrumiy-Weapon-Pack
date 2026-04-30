@@ -30,12 +30,12 @@ Mods: {
 					HateCrowded: I can't hear myself solder in this crowd!
 					LikeNPC_Princess: I like {NPCName}.
 					Princess_LovesNPC: I like {NPCName}.
-					LikeBiome: Мне нравится {BiomeName}.
-					DislikeBiome: Мне не нравится {BiomeName}.
-					LoveNPC: Я люблю {NPCName}.
-					LikeNPC: Мне нравится {NPCName}.
-					DislikeNPC: Мне не нравится {NPCName}.
-					HateNPC: Я ненавижу {NPCName}.
+					LikeBiome: I like {BiomeName}.
+					DislikeBiome: I dislike {BiomeName}.
+					LoveNPC: I love {NPCName}.
+					LikeNPC: I like {NPCName}.
+					DislikeNPC: I dislike {NPCName}.
+					HateNPC: I hate {NPCName}.
 				}
 			}
 		}
@@ -210,8 +210,14 @@ Mods: {
 			}
 
 			GravityGun: {
-				Tooltip: ""
 				DisplayName: Gravity Gun
+				Tooltip:
+					'''
+					Hold left click to grab loose items, NPCs or break a tile under the cursor
+					Right click to launch the held target at the cursor — slamming it into walls deals impact damage
+					Reach: 700 tiles. Bosses included. Dummies excluded.
+					'Pick a side. Then pick the other side, hard.'
+					'''
 			}
 		}
 

@@ -14,6 +14,29 @@ SPRITES TO CREATE / ЗАМЕНИТЬ
    Description: An old man NPC wearing a distinctive hat.
    Reference: Old, grizzled man similar to Grizzled Jon from RDR2.
 
+3. GravityGun.png  [PLACEHOLDER]
+   Location: Content/Items/Weapons/GravityGun.png
+   Size: 64x28 pixels (matches Item.width=64, Item.height=28).
+   Description: Inventory icon AND in-hand sprite of the Gravity Gun.
+                The same texture is also drawn in the player's hand by
+                GravityGunBeam.PreDraw — so it must look reasonable both
+                in inventory and rotated to follow the cursor.
+   Pivot: rotation/origin is the texture center.
+   Orientation: barrel pointing RIGHT (the code mirrors the sprite when the
+                player faces left via SpriteEffects.FlipVertically).
+   Reference: Half-Life 2 Gravity Gun — orange energy core, dark grey body,
+              prominent barrel and grip. Stylise to fit Terraria pixel art.
+   Marker: current placeholder has a 1x1 magenta dot in the top-left corner —
+           that's the "this is a placeholder" sentinel; remove it in the final art.
+
+4. GravityGunBeam.png  [PLACEHOLDER, currently unused at runtime]
+   Location: Content/Projectiles/GravityGunBeam.png
+   Size: 16x16 pixels.
+   Description: Single beam particle. The runtime currently draws the beam
+                with vanilla DustID.Flare in DrawBeam(), so this PNG is only
+                used if the projectile starts rendering its own texture.
+                Provided for parity / future expansion.
+
 ---
 
 How to add sprites:

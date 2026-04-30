@@ -1,6 +1,4 @@
-using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -8,8 +6,6 @@ namespace LK_Ugrumiy_WP.Content.Items.Weapons
 {
     public class GravityGun : ModItem
     {
-        public override string Texture => $"Terraria/Images/Item_{ItemID.PortalGun}";
-
         public override void SetDefaults()
         {
             Item.damage = 0;

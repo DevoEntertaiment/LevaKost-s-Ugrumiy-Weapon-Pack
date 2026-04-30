@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -89,10 +88,12 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
 
         public override void SetMount(Player player, ref bool skipDust)
         {
-            // Звук запуска двигателя — играем только локальному игроку
+            // Звук запуска двигателя — играем только локальному игроку.
+            // Используем PlayTrackedSound: SlotId сохраняется в OppressorMK2Player,
+            // PostUpdate подтаскивает Position за игроком (иначе звук висит в точке посадки).
             if (player.whoAmI == Main.myPlayer)
             {
-                SoundEngine.PlaySound(OppressorMK2Sounds.EngineStart, player.Center);
+                player.GetModPlayer<OppressorMK2Player>().PlayEngineStartSound();
             }
         }
 

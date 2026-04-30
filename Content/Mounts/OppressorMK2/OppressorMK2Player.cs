@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using ReLogic.Utilities;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -13,6 +14,13 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
 
         // Таймер активности самого рывка (для анимации и эффектов)
         public int customDashTimer = 0;
+
+        // SlotId-ы активных звуков — чтобы каждый кадр обновлять Position под Player.Center,
+        // иначе звук остаётся "висеть" в точке спавна, и игрок улетает от него.
+        // Паттерн взят из Calamity (WulfrumDiggingTurtleProjectile.cs:84+).
+        private SlotId engineStartSoundSlot;
+        private SlotId boostSoundSlot;
+        private SlotId cooldownSoundSlot;
 
         public override void PreUpdateMovement()
         {
@@ -49,15 +57,30 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
                     {
                         ModPacket packet = Mod.GetPacket();
                         packet.Write((byte)LK_Ugrumiy_WP.MessageType.OppressorMK2BoostSync);
-                        packet.Write((byte)Player.whoAmI);
                         packet.Write((sbyte)Player.direction);
                         packet.Send();
                     }
                 }
                 else
                 {
-                    SoundEngine.PlaySound(OppressorMK2Sounds.Cooldown, Player.Center);
+                    PlayCooldownSound();
                 }
+            }
+        }
+
+        // Подтаскиваем активные звуки за игроком, чтобы они не висели в точке спавна.
+        public override void PostUpdate()
+        {
+            UpdateSoundPosition(ref engineStartSoundSlot);
+            UpdateSoundPosition(ref boostSoundSlot);
+            UpdateSoundPosition(ref cooldownSoundSlot);
+        }
+
+        private void UpdateSoundPosition(ref SlotId slot)
+        {
+            if (SoundEngine.TryGetActiveSound(slot, out ActiveSound activeSound) && activeSound != null)
+            {
+                activeSound.Position = Player.Center;
             }
         }
 
@@ -76,7 +99,6 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
         }
 
         // Применить эффекты буста на удалённого игрока (без изменения velocity — её пушит сам клиент игрока).
-        // Вызывается из HandlePacket в MP-клиенте.
         public void ApplyBoostEffectsRemote(int dashDirection)
         {
             ApplyBoostEffects(dashDirection);
@@ -87,7 +109,7 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
             customDashDelay = 300; // Перезарядка (300 тиков = 5 секунд)
             customDashTimer = 30;  // Время действия рывка
 
-            SoundEngine.PlaySound(OppressorMK2Sounds.Boost, Player.Center);
+            PlayBoostSound();
 
             // Визуальный эффект дыма/пыли
             for (int i = 0; i < 45; i++)
@@ -96,6 +118,24 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
                 Main.dust[d].velocity *= 4.5f;
                 Main.dust[d].noGravity = true;
             }
+        }
+
+        // Стартуем звук от позиции игрока и запоминаем SlotId, чтобы PostUpdate подтягивал
+        // Position за игроком (3D-аудио иначе остаётся в точке спавна и затихает в одном ухе).
+
+        public void PlayEngineStartSound()
+        {
+            engineStartSoundSlot = SoundEngine.PlaySound(OppressorMK2Sounds.EngineStart, Player.Center);
+        }
+
+        public void PlayBoostSound()
+        {
+            boostSoundSlot = SoundEngine.PlaySound(OppressorMK2Sounds.Boost, Player.Center);
+        }
+
+        public void PlayCooldownSound()
+        {
+            cooldownSoundSlot = SoundEngine.PlaySound(OppressorMK2Sounds.Cooldown, Player.Center);
         }
     }
 }

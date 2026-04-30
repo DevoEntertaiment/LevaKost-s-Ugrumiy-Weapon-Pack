@@ -16,7 +16,9 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
             Item.useStyle = ItemUseStyleID.Swing;
             Item.value = Item.sellPrice(gold: 10);
             Item.rare = ItemRarityID.Cyan;
-            Item.UseSound = SoundID.Item79; // Звук маунта
+            // Звук посадки на маунт играет наш OppressorMK2.SetMount (EngineStart.wav).
+            // UseSound = null, чтобы Player.QuickMount не накладывал поверх ваниловый Item79.
+            Item.UseSound = null;
             Item.noMelee = true;
             Item.mountType = ModContent.MountType<OppressorMK2>();
         }

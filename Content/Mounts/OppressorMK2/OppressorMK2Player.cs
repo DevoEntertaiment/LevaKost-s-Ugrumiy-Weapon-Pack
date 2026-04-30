@@ -42,6 +42,17 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
                 if (customDashDelay == 0)
                 {
                     TriggerBoost(Player.direction);
+
+                    // Двойной тап синкается естественно через ModMount.UpdateEffects (control-флаги синхронны).
+                    // E-кнопка локальная (ModKeybind) — нужен явный sync-пакет, иначе на других клиентах будет фантомный буст.
+                    if (Main.netMode == NetmodeID.MultiplayerClient)
+                    {
+                        ModPacket packet = Mod.GetPacket();
+                        packet.Write((byte)LK_Ugrumiy_WP.MessageType.OppressorMK2BoostSync);
+                        packet.Write((byte)Player.whoAmI);
+                        packet.Write((sbyte)Player.direction);
+                        packet.Send();
+                    }
                 }
                 else
                 {
@@ -50,7 +61,9 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
             }
         }
 
-        // Триггер буста: вызывается из E-кнопки и из двойного тапа стрелок
+        // Триггер буста на локальном игроке: вызывается из E-кнопки и из двойного тапа стрелок.
+        // Меняет velocity и применяет общие эффекты (timer/sound/dust).
+        // MP-sync для E-кнопки делается на месте вызова (PreUpdateMovement).
         public void TriggerBoost(int dashDirection)
         {
             if (dashDirection == 0)
@@ -59,6 +72,18 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
             }
 
             Player.velocity.X = 45f * dashDirection;
+            ApplyBoostEffects(dashDirection);
+        }
+
+        // Применить эффекты буста на удалённого игрока (без изменения velocity — её пушит сам клиент игрока).
+        // Вызывается из HandlePacket в MP-клиенте.
+        public void ApplyBoostEffectsRemote(int dashDirection)
+        {
+            ApplyBoostEffects(dashDirection);
+        }
+
+        private void ApplyBoostEffects(int dashDirection)
+        {
             customDashDelay = 300; // Перезарядка (300 тиков = 5 секунд)
             customDashTimer = 30;  // Время действия рывка
 

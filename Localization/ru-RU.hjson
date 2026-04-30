@@ -30,12 +30,12 @@ Mods: {
 					HateCrowded: В этой толпе я даже паять не могу!
 					LikeNPC_Princess: Мне нравится {NPCName}.
 					Princess_LovesNPC: Мне нравится {NPCName}.
-					// LikeBiome: Мне нравится {BiomeName}.
-					// DislikeBiome: Мне не нравится {BiomeName}.
-					// LoveNPC: Я люблю {NPCName}.
-					// LikeNPC: Мне нравится {NPCName}.
-					// DislikeNPC: Мне не нравится {NPCName}.
-					// HateNPC: Я ненавижу {NPCName}.
+					LikeBiome: Мне нравится {BiomeName}.
+					DislikeBiome: Мне не нравится {BiomeName}.
+					LoveNPC: Я люблю {NPCName}.
+					LikeNPC: Мне нравится {NPCName}.
+					DislikeNPC: Мне не нравится {NPCName}.
+					HateNPC: Я ненавижу {NPCName}.
 				}
 			}
 		}
@@ -210,8 +210,14 @@ Mods: {
 			}
 
 			GravityGun: {
-				// Tooltip: ""
-				// DisplayName: Gravity Gun
+				DisplayName: Гравитационная пушка
+				Tooltip:
+					'''
+					Зажмите ЛКМ — притягивает выброшенные предметы, NPC или ломает блок под курсором
+					ПКМ — швыряет удерживаемую цель в сторону курсора. Удар о стену наносит урон от столкновения
+					Дальность: 700 тайлов. Боссы — да. Манекены — нет.
+					'Выбери сторону. Потом выбери другую — посильнее.'
+					'''
 			}
 		}
 
@@ -289,8 +295,8 @@ Mods: {
 			Ibp3000Projectile.DisplayName: ИБП-3000
 			SlimeGlob.DisplayName: Слизневый сгусток
 			SlimePuddle.DisplayName: Слизневая лужа
-			// VxeMouseProjectile.DisplayName: Vxe Mouse Projectile
-			// GravityGunBeam.DisplayName: Gravity Gun Beam
+			VxeMouseProjectile.DisplayName: VXE-мышь
+			GravityGunBeam.DisplayName: Гравитационный луч
 		}
 	}
 }

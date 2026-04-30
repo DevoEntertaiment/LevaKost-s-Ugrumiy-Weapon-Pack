@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -44,6 +45,12 @@ namespace LK_Ugrumiy_WP.Content.Projectiles
             // Продлеваем жизнь снаряду
             Projectile.timeLeft = 2;
             Projectile.Center = player.MountedCenter;
+
+            // Захват/бросок и прицеливание управляются мышью локального игрока,
+            // поэтому исполняем эту логику только на машине-владельце снаряда.
+            // На остальных клиентах снаряд просто следует за игроком и рендерится.
+            if (Projectile.owner != Main.myPlayer)
+                return;
 
             // Прицеливание: поворачиваем персонажа и руку за курсором
             Vector2 targetPos = Main.MouseWorld;
@@ -260,30 +267,27 @@ namespace LK_Ugrumiy_WP.Content.Projectiles
         {
             Player player = Main.player[Projectile.owner];
 
-            // Отрисовка самой пушки
-            Texture2D texture = Terraria.GameContent.TextureAssets.Item[ItemID.PortalGun].Value;
-            
+            // Рисуем спрайт самой пушки в руке игрока
+            Texture2D texture = TextureAssets.Item[ModContent.ItemType<Items.Weapons.GravityGun>()].Value;
+
             // Центр игрока (рука)
             Vector2 drawPos = player.MountedCenter - Main.screenPosition;
-            
-            // Центр текстуры Portal Gun для правильного вращения
+
             Vector2 origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
 
-            // Вычисляем точный угол поворота к мыши
-            Vector2 dirToMouse = (Main.MouseWorld - player.MountedCenter).SafeNormalize(Vector2.UnitX);
+            // Целимся туда, куда смотрит рука игрока (см. AI: itemRotation выставляется по targetPos)
+            Vector2 dirToMouse = new Vector2(
+                (float)Math.Cos(player.itemRotation) * player.direction,
+                (float)Math.Sin(player.itemRotation) * player.direction);
+            if (dirToMouse.LengthSquared() < 0.0001f)
+                dirToMouse = Vector2.UnitX * player.direction;
             float rotation = dirToMouse.ToRotation();
-            
-            // Если игрок смотрит влево, разворачиваем текстуру и корректируем угол
-            SpriteEffects effects = SpriteEffects.None;
-            if (player.direction == 1)
-            {
-                rotation += MathHelper.PiOver4; // Спрайты оружия в Террарии нарисованы под 45 градусов (вправо-вверх)
-            }
-            else
-            {
-                rotation += MathHelper.PiOver4 * 3f;
-                effects = SpriteEffects.FlipVertically;
-            }
+
+            // Спрайт нарисован «горизонтально» (барабан вправо), поэтому при взгляде
+            // влево отзеркаливаем по вертикали, чтобы рукоять оставалась внизу.
+            SpriteEffects effects = player.direction == 1
+                ? SpriteEffects.None
+                : SpriteEffects.FlipVertically;
 
             Main.EntitySpriteDraw(texture, drawPos, null, lightColor, rotation, origin, player.GetAdjustedItemScale(player.HeldItem), effects, 0);
 

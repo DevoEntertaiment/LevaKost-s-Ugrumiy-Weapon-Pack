@@ -6,6 +6,8 @@ namespace LK_Ugrumiy_WP.Content.Items.Weapons
 {
     public class GravityGun : ModItem
     {
+        public override string Texture => "LK_Ugrumiy_WP/Content/Items/Weapons/GravityGun/GravityGun";
+
         public override void SetDefaults()
         {
             Item.damage = 0;

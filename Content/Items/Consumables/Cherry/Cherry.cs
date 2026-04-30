@@ -10,6 +10,8 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
     /// </summary>
     public class Cherry : ModItem
     {
+        public override string Texture => "LK_Ugrumiy_WP/Content/Items/Consumables/Cherry/Cherry";
+
         public override void SetDefaults()
         {
             // Тип предмета - расходуемый

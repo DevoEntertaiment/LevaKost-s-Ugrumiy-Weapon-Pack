@@ -11,6 +11,8 @@ namespace LK_Ugrumiy_WP.Content.Projectiles
     /// </summary>
     public class Ibp3000Projectile : ModProjectile
     {
+        public override string Texture => "LK_Ugrumiy_WP/Content/Projectiles/Ibp3000Projectile/Ibp3000Projectile";
+
         public override void SetDefaults()
         {
             Projectile.width = 32;

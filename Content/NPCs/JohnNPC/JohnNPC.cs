@@ -40,7 +40,7 @@ namespace LK_Ugrumiy_WP.Content.NPCs
         private const float JumpStrength = -9.5f;
         private const float HighJumpStrength = -12.5f;
 
-        public override string Texture => "LK_Ugrumiy_WP/Content/NPCs/JohnNPC";
+        public override string Texture => "LK_Ugrumiy_WP/Content/NPCs/JohnNPC/JohnNPC";
 
         public override LocalizedText DisplayName => Language.GetOrRegister(
             "Mods.LK_Ugrumiy_WP.NPCs.JohnNPC.DisplayName",

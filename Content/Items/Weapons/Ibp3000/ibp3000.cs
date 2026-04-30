@@ -6,6 +6,8 @@ namespace LK_Ugrumiy_WP.Content.Items.Weapons
 {
     public class ibp3000 : ModItem
     {
+        public override string Texture => "LK_Ugrumiy_WP/Content/Items/Weapons/Ibp3000/ibp3000";
+
         public override void SetDefaults()
         {
             // Тип предмета - метательный

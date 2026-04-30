@@ -8,6 +8,8 @@ namespace LK_Ugrumiy_WP.Content.Buffs
     /// </summary>
     public class CowBellCooldown : ModBuff
     {
+        public override string Texture => "LK_Ugrumiy_WP/Content/Buffs/CowBellCooldown/CowBellCooldown";
+
         public override void SetStaticDefaults()
         {
             Main.debuff[Type] = true;

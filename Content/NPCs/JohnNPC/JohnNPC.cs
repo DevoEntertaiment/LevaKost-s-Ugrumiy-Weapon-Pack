@@ -337,8 +337,12 @@ namespace LK_Ugrumiy_WP.Content.NPCs
             {
                 ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(text), color);
             }
-            else
+            else if (Main.netMode == NetmodeID.SinglePlayer)
             {
+                // В MP NPC.AI крутится и на сервере, и на каждом клиенте.
+                // Сервер уже разослал сообщение через ChatHelper, и если бы
+                // здесь стоял голый `else`, MultiplayerClient ещё раз вызвал бы
+                // Main.NewText локально → каждый клиент видел бы фразу дважды.
                 Main.NewText(text, color.R, color.G, color.B);
             }
         }

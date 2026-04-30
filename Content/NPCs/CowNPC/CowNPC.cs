@@ -23,8 +23,12 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 			"Mods.LK_Ugrumiy_WP.NPCs.CowNPC.DisplayName",
 			() => "Cow");
 
-		/// <summary>Кулдаун выдачи молока (в тиках).</summary>
-		private int milkCooldown = 0;
+		// Кулдаун выдачи молока хранится per-player в CowNPCPlayer:
+		// раньше он жил в ModNPC-инстансе, а в MP NPC AI крутится только на
+		// сервере, тогда как OnChatButtonClicked срабатывает на клиенте, который
+		// открыл диалог. Из-за этого серверный таймер никто не выставлял, а
+		// клиентский никто не уменьшал. Calamity / ExampleMod в подобных кейсах
+		// тоже хранят пользовательский кулдаун в ModPlayer.
 
 		public override void SetStaticDefaults()
 		{
@@ -100,11 +104,7 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 			return false;
 		}
 
-		public override void PostAI()
-		{
-			if (milkCooldown > 0)
-				milkCooldown--;
-		}
+		// Кулдаун теперь тикает в CowNPCPlayer.PostUpdate (per-player).
 
 		public override string GetChat()
 		{
@@ -131,8 +131,9 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 				return;
 
 			Player player = Main.LocalPlayer;
+			CowNPCPlayer cowPlayer = player.GetModPlayer<CowNPCPlayer>();
 
-			if (milkCooldown > 0)
+			if (cowPlayer.MilkCooldown > 0)
 			{
 				Main.npcChatText = Language.GetTextValue("Mods.LK_Ugrumiy_WP.Dialogue.CowNPC.Cooldown");
 				return;
@@ -141,7 +142,7 @@ namespace LK_Ugrumiy_WP.Content.NPCs
 			int milkType = ModContent.ItemType<Items.Consumables.CowMilk>();
 			player.QuickSpawnItem(NPC.GetSource_GiftOrReward(), milkType);
 
-			milkCooldown = 300;
+			cowPlayer.MilkCooldown = 300;
 
 			WeightedRandom<string> reaction = new WeightedRandom<string>();
 			reaction.Add(Language.GetTextValue("Mods.LK_Ugrumiy_WP.Dialogue.CowNPC.Milk1"));

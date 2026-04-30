@@ -43,17 +43,30 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 
         public override bool? UseItem(Player player)
         {
-            if (player.whoAmI == Main.myPlayer)
+            // NPC spawning must happen on the server (or in singleplayer). On a
+            // MultiplayerClient, NPC.NewNPC creates a local-only NPC that never
+            // gets synced. ExampleMod (Content/NPCs/ExampleTravelingMerchant.cs)
+            // and Calamity follow the same `Main.netMode != MultiplayerClient`
+            // pattern.
+            if (Main.netMode != NetmodeID.MultiplayerClient)
             {
                 int npcType = ModContent.NPCType<NPCs.CowNPC>();
 
-                NPC.NewNPC(
+                int npcIndex = NPC.NewNPC(
                     player.GetSource_ItemUse(Item),
                     (int)player.Center.X + 100,
                     (int)player.Center.Y,
                     npcType
                 );
 
+                if (Main.netMode == NetmodeID.Server && npcIndex < Main.maxNPCs)
+                {
+                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npcIndex);
+                }
+            }
+
+            if (player.whoAmI == Main.myPlayer)
+            {
                 Main.NewText(Language.GetTextValue("Mods.LK_Ugrumiy_WP.Misc.CowBellSpawn"), 100, 255, 100);
             }
 

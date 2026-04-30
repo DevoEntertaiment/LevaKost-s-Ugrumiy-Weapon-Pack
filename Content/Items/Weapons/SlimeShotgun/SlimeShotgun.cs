@@ -57,11 +57,14 @@ namespace LK_Ugrumiy_WP.Content.Items.Weapons
 				float speed = velocity.Length() * Main.rand.NextFloat(0.85f, 1.15f);
 				Vector2 pelletVelocity = angle.ToRotationVector2() * speed;
 
+				// Используем `type` из параметров, а не хардкод — иначе любые
+				// модификации Item.shoot (vanilla ammo, моды и т.п.) проигнорируются.
+				// Паттерн из ExampleMod (ExampleMod/Content/Items/Weapons/ExampleGun.cs).
 				Projectile.NewProjectile(
 					source,
 					position,
 					pelletVelocity,
-					ModContent.ProjectileType<Projectiles.SlimeGlob>(),
+					type,
 					damage,
 					knockback,
 					player.whoAmI

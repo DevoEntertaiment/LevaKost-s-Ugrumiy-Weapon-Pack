@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Chat;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -317,12 +318,29 @@ namespace LK_Ugrumiy_WP.Content.NPCs
             NPC.target = targetPlayer;
             NPC.TargetClosest(true);
 
-            string angryMsg = Language.GetTextValue("Mods.LK_Ugrumiy_WP.Dialogue.JohnNPC.AngryChat");
-            Main.NewText(angryMsg, 255, 100, 100);
-            string transformMsg = Language.GetTextValue("Mods.LK_Ugrumiy_WP.Misc.JohnTransform");
-            Main.NewText(transformMsg, 255, 60, 60);
+            // NPC.AI runs on the server in MP, so Main.NewText would land on the
+            // server console only and never reach players. Use the broadcast helper
+            // (ExampleMod NPC patterns / Calamity's BroadcastLocalizedMessage).
+            BroadcastLine("Mods.LK_Ugrumiy_WP.Dialogue.JohnNPC.AngryChat", new Color(255, 100, 100));
+            BroadcastLine("Mods.LK_Ugrumiy_WP.Misc.JohnTransform", new Color(255, 60, 60));
 
             NPC.netUpdate = true;
+        }
+
+        // Broadcast a localized chat line to every client. In SP this is
+        // equivalent to Main.NewText; on a server we send a chat packet so all
+        // connected clients see it.
+        private static void BroadcastLine(string localizationKey, Color color)
+        {
+            string text = Language.GetTextValue(localizationKey);
+            if (Main.netMode == NetmodeID.Server)
+            {
+                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(text), color);
+            }
+            else
+            {
+                Main.NewText(text, color.R, color.G, color.B);
+            }
         }
 
         // ---- Frame animation (custom because aiStyle = -1) ----------------

@@ -52,8 +52,14 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 			if (FatLevel > 0)
 			{
 				FatLevel = Math.Max(0f, FatLevel - DeathFatLoss);
-				string msg = Language.GetTextValue("Mods.LK_Ugrumiy_WP.Misc.FatLostOnDeath", (int)DeathFatLoss);
-				Main.NewText(msg, 200, 200, 100);
+				// Kill() runs on every client for every player's death — without the
+				// myPlayer guard the local screen would show the fat-loss message for
+				// every remote player who died.
+				if (Player.whoAmI == Main.myPlayer)
+				{
+					string msg = Language.GetTextValue("Mods.LK_Ugrumiy_WP.Misc.FatLostOnDeath", (int)DeathFatLoss);
+					Main.NewText(msg, 200, 200, 100);
+				}
 			}
 		}
 
@@ -145,8 +151,12 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 				FatLevel = Math.Max(0f, FatLevel - toLose);
 				burnAccumulator -= toLose;
 
-				// Уведомление при переходе на стадию ниже
-				if (FatLevel > 0 && (int)(FatLevel + toLose) / 10 != (int)FatLevel / 10)
+				// PostUpdate runs for every player on every client; without the myPlayer
+				// guard the local chat would print burn-progress messages from every
+				// remote player who is also losing fat.
+				if (Player.whoAmI == Main.myPlayer
+					&& FatLevel > 0
+					&& (int)(FatLevel + toLose) / 10 != (int)FatLevel / 10)
 				{
 					string msg = Language.GetTextValue("Mods.LK_Ugrumiy_WP.Misc.BurningFat", (int)FatLevel, (int)MaxFat);
 					Main.NewText(msg, 150, 255, 150);
@@ -156,6 +166,13 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 
 		private void BreakBlocksUnderneath()
 		{
+			// PostUpdate runs for every player on every client. Without the myPlayer
+			// guard each remote client would also rip the tiles locally, desyncing
+			// the world. Only the owning client kills the tiles and broadcasts a
+			// TileManipulation packet so the server / other clients update.
+			if (Player.whoAmI != Main.myPlayer)
+				return;
+
 			int playerTileX = (int)(Player.Center.X / 16f);
 			int playerTileY = (int)((Player.position.Y + Player.height + 2f) / 16f); // Плитка прямо под ногами
 			int depth = Main.rand.Next(2, 4); // 2 или 3 блока в глубину
@@ -165,6 +182,9 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 			{
 				for (int y = playerTileY; y < playerTileY + depth; y++)
 				{
+					if (!WorldGen.InWorld(x, y))
+						continue;
+
 					Tile tile = Main.tile[x, y];
 					// Проверяем, что есть блок и он твердый
 					if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType])
@@ -174,6 +194,10 @@ namespace LK_Ugrumiy_WP.Content.Items.Consumables
 						if (!tile.HasTile)
 						{
 							playedSound = true;
+							if (Main.netMode == NetmodeID.MultiplayerClient)
+							{
+								NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, x, y);
+							}
 						}
 					}
 				}

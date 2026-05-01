@@ -86,6 +86,17 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
             }
         }
 
+        public override void SetMount(Player player, ref bool skipDust)
+        {
+            // Звук запуска двигателя — играем только локальному игроку.
+            // Используем PlayTrackedSound: SlotId сохраняется в OppressorMK2Player,
+            // PostUpdate подтаскивает Position за игроком (иначе звук висит в точке посадки).
+            if (player.whoAmI == Main.myPlayer)
+            {
+                player.GetModPlayer<OppressorMK2Player>().PlayEngineStartSound();
+            }
+        }
+
         public override void UpdateEffects(Player player)
         {
             // Убираем урон от падения
@@ -93,7 +104,7 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
 
             OppressorMK2Player modPlayer = player.GetModPlayer<OppressorMK2Player>();
 
-            // Механика рывка (boost)
+            // Механика рывка (boost) через двойное нажатие стрелок (E-кнопка обрабатывается в OppressorMK2Player)
             if (modPlayer.customDashDelay == 0)
             {
                 int dashDirection = 0;
@@ -111,21 +122,7 @@ namespace LK_Ugrumiy_WP.Content.Mounts.OppressorMK2
 
                 if (dashDirection != 0)
                 {
-                    // Выполняем рывок
-                    player.velocity.X = 45f * dashDirection; 
-                    modPlayer.customDashDelay = 300; // Перезарядка (300 тиков = 5 секунд)
-                    modPlayer.customDashTimer = 30; // Время действия рывка (для анимации/эффектов)
-                    
-                    // Звуковой эффект
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item82, player.Center); 
-                    
-                    // Визуальный эффект дыма/пыли
-                    for (int i = 0; i < 45; i++)
-                    {
-                        int d = Dust.NewDust(player.position, player.width, player.height, DustID.Smoke, 0f, 0f, 100, default, 2.5f);
-                        Main.dust[d].velocity *= 4.5f;
-                        Main.dust[d].noGravity = true;
-                    }
+                    modPlayer.TriggerBoost(dashDirection);
                 }
             }
         }
